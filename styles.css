@@ -1,0 +1,849 @@
+/* Tokens shared with the main audit view (src/styles.css). */
+:root{--radius:8px;--active-bg:#e6eee6;--active-line:#7fa08c;--ink:#222725;--muted:#6c726e;--line:#e2e4df;--bg:#fafaf7;--accent:#365f52;--pale:#eef2ec;--paper:#fffefb}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+a{color:var(--accent)}
+.muted{color:var(--muted)}
+
+/* One-screen layout: identity, process, papers, footer. Vertical sizes scale with
+   viewport height so the whole page fits a laptop screen without scrolling. */
+.page{max-width:1120px;margin:auto;padding:clamp(16px,3.2vh,36px) 32px clamp(10px,1.6vh,18px);height:100vh;height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden}
+
+/* 1. Identity */
+.hero{text-align:center;padding-bottom:clamp(12px,2.6vh,28px);border-bottom:1px solid var(--line)}
+.logo{font:normal clamp(44px,8vh,72px)/1 Georgia,'Times New Roman',serif;letter-spacing:-2.4px;margin:0 0 clamp(8px,1.6vh,16px)}
+.logo i{font-style:normal;color:var(--accent)}
+.lead{font-size:clamp(13px,1.85vh,15px);line-height:1.65;color:#5c655e;max-width:760px;margin:0 auto}
+.lead em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* 2. How it works: one row of four steps. */
+.how{padding:clamp(14px,2.6vh,28px) 0 0}
+.eyebrow{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b827c;font-weight:700;margin:0 0 clamp(8px,1.4vh,14px);text-align:center}
+.stages{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;column-gap:20px}
+.stage{display:grid;grid-template-rows:subgrid;grid-row:span 2;border-top:2px solid var(--accent);padding-top:8px}
+.stage+.stage{border-top-color:#809d89}
+.stage-label{font-size:12px;color:var(--muted);margin-bottom:clamp(6px,1.2vh,12px)}
+.stage-label span{color:var(--accent);font-weight:700;margin-right:6px}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.step{position:relative;height:100%;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(8px,1.2vh,12px) 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0}
+.step strong{font-size:13px;line-height:1.25;margin-top:clamp(4px,.7vh,7px)}
+.step small{color:var(--muted);font-size:12px;line-height:1.35;max-width:30ch;margin-top:2px}
+.icon{width:clamp(32px,5vh,44px);height:clamp(32px,5vh,44px);flex:none;fill:none;stroke:var(--accent);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.step::after{content:'→';position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:#9aa49b;font-size:13px}
+.stage:last-child .step:last-child::after{content:none}
+/* Current step: same tint as the paper-choice area it points to. */
+.step.current{background:var(--active-bg);border-color:var(--active-line);box-shadow:inset 0 0 0 1px var(--active-line)}
+.step.current strong{color:#254c3e}
+.here{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:9px;letter-spacing:.8px;text-transform:uppercase;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.gate{text-align:center;color:var(--muted);font-size:12px;margin:clamp(6px,1.2vh,12px) 0 0}
+
+/* 3. Paper choice: the sheets take whatever height is left. */
+.choose{margin-top:clamp(10px,1.8vh,18px);padding:clamp(10px,1.8vh,18px) 24px;display:grid;grid-template-rows:minmax(0,1fr);min-height:0;background:var(--active-bg);border:1px solid var(--active-line);border-radius:12px}
+.choose h2{font:normal clamp(20px,3vh,28px)/1.2 Georgia,serif;letter-spacing:-.5px;text-align:center;margin:2px 0 clamp(6px,1.4vh,16px);color:#254c3e}
+.desk{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;min-height:0;height:100%}
+.sheet-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,1.8vh,18px);min-height:0;height:100%;padding:6px 0 12px;container-type:size}
+.sheet{display:block;height:calc(100cqh - 18px - 34px - clamp(10px,1.8vh,18px));aspect-ratio:8.5/11;flex:none;overflow:hidden;background:var(--paper);border:1px solid #e7e5de;border-radius:var(--radius);padding:6% 7%;color:var(--ink);text-decoration:none;text-align:center;box-shadow:0 1px 2px #0000000d,0 10px 28px #2a2f2b1a;transition:transform .2s ease,box-shadow .2s ease}
+.tilt-left{transform:rotate(-1.6deg)}
+.tilt-right{transform:rotate(1.4deg)}
+a.sheet:hover,a.sheet:focus-visible{transform:rotate(0) translateY(-4px);box-shadow:0 2px 4px #0000000d,0 18px 40px #2a2f2b26}
+.sheet span{display:block}
+.sheet-meta{font-size:2.6cqh;color:#9aa49b;letter-spacing:.4px;margin-bottom:6%}
+.sheet-title{font:normal 5.6cqh/1.2 Georgia,serif;letter-spacing:-.3px;margin-bottom:3%}
+.sheet-authors{font-size:3.2cqh;color:var(--muted);margin-bottom:6%}
+.sheet-abs-head{font:italic 3.2cqh Georgia,serif;margin-bottom:2%}
+.sheet-abs{font:3cqh/1.5 Georgia,serif;color:#4f5752;text-align:left;hyphens:auto;margin-bottom:6%}
+/* Placeholder body text: plain rules, not readable content. */
+.sheet-body{columns:2;column-gap:10%}
+.sheet-body i{display:block;height:1.4cqh;background:#ecebe5;margin-bottom:2.4cqh}
+.sheet-body i:nth-child(4n){width:70%}
+.caption{position:relative;text-align:center}
+.caption p{font-size:13px;color:#5c655e;margin:6px 0 14px;line-height:1.45}
+.tag{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.btn{display:inline-block;background:#315b4c;border:1px solid #315b4c;color:#fff;padding:8px 14px;border-radius:6px;font:inherit;font-size:12px;text-decoration:none;cursor:pointer}
+.sheet-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqh;background:#eceeea;border:1.5px dashed #b4bbb5;box-shadow:none;color:#8a928c}
+.plus{width:12cqh;height:12cqh;fill:none;stroke:#9aa29c;stroke-width:1.4;stroke-linecap:round}
+.sheet-add-label{font:3.4cqh Georgia,serif;color:#7d857f}
+.btn.secondary{background:#fff;color:#315b4c}
+.pending{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:max-content;max-width:280px;font-size:12px;margin:6px 0 0}
+footer{font-size:11px;color:var(--muted);padding-top:clamp(6px,1vh,10px);text-align:center}
+
+a:focus-visible,button:focus-visible{outline:3px solid #608d78;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+
+/* Narrow or short screens (phones, small windows): fall back to a normal scrolling page. */
+@media (max-width:900px),(max-height:560px){
+  .page{height:auto;overflow:visible;display:block;padding:40px 16px 32px}
+  .hero,.how{padding-bottom:28px}
+  .how{padding-top:28px}
+  .choose{margin-top:28px;padding:20px 16px 28px}
+  .stages{grid-template-columns:1fr;grid-template-rows:none;row-gap:24px}
+  .stage{grid-row:auto;grid-template-rows:auto auto}
+  .stage:first-child .step:last-child::after{content:none}
+  .desk{grid-template-columns:1fr;gap:40px;height:auto}
+  .plus{width:56px;height:56px}.sheet-add-label{font-size:14px}.sheet-add{aspect-ratio:8.5/11}
+  .sheet-wrap{flex-direction:column;height:auto;container-type:normal}
+  .sheet{height:auto;width:min(300px,100%)}
+  .sheet-meta{font-size:9px}.sheet-title{font-size:20px}.sheet-authors,.sheet-abs-head{font-size:11px}.sheet-abs{font-size:11px}.sheet-body i{height:5px;margin-bottom:8px}
+  .caption{text-align:center;max-width:300px}
+  footer{margin-top:24px}
+}
+@media (max-width:560px){
+  .logo{font-size:52px;letter-spacing:-1.8px}
+  .steps{grid-template-columns:1fr;gap:12px}
+  .step::after{content:none}
+}
+
+/* Step progress: completed step gets a check mark; the badge moves with the current step. */
+.step.done{border-color:#b9cbbd}
+.step.done::before{content:'✓';position:absolute;top:8px;right:10px;font-size:12px;font-weight:700;color:var(--accent)}
+.choose{transition:opacity .28s ease}
+.choose.leaving{opacity:0}
+
+/* 4. Reproducibility analysis: four component cards in the space the papers used. */
+.audit{margin-top:clamp(10px,1.8vh,18px);padding:clamp(10px,1.6vh,16px) 20px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:clamp(8px,1.4vh,14px);min-height:0;background:var(--active-bg);border:1px solid var(--active-line);border-radius:12px;animation:fadein .35s ease}
+.audit[hidden]{display:none}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.audit-head{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px}
+.audit-paper{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.audit-label{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.audit-paper strong{font:normal 19px Georgia,serif;letter-spacing:-.3px;color:#254c3e}
+.audit-paper .muted{font-size:12px}
+.audit-status{margin:0;font-size:12.5px;color:#4c5b50;text-align:right}
+.audit-status.ok{color:#2f6048;font-weight:600}
+.audit-status.miss{color:#922d2d;font-weight:600}
+.components{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;min-height:0}
+.comp{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(10px,1.6vh,16px) 14px;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:0;overflow:auto;transition:opacity .3s ease,border-color .3s ease}
+.comp[data-state=waiting]{opacity:.45}
+.comp[data-state=loading]{border-color:var(--active-line);box-shadow:inset 0 0 0 1px var(--active-line)}
+.comp-icon{margin-bottom:4px}
+.comp-name{font:600 13.5px/1.3 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0 0 6px}
+.pill{font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;background:#eef0ec;color:var(--muted)}
+.comp[data-state=loading] .pill{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.pill.ok{background:#e1ede4;color:#2f6048}
+.pill.part{background:#f6ecdc;color:#7a5826}
+.pill.miss{background:#f8e5e3;color:#922d2d}
+.comp-items{list-style:none;margin:clamp(8px,1.3vh,12px) 0 0;padding:0;width:100%;text-align:left}
+.item{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:clamp(3px,.6vh,6px) 0;border-top:1px solid #eef0ec;font-size:12px;animation:fadein .25s ease}
+.item-name{color:#3c443f}
+.chip{flex:none;font-size:10.5px;font-weight:600}
+.chip.ok{color:#2f6048}.chip.part{color:#7a5826}.chip.miss{color:#a33b3b}
+.comp-summary{margin:clamp(6px,1.2vh,10px) 0 0;font-size:12px;line-height:1.45;color:#5c655e;text-align:left}
+.comp-summary:empty{display:none}
+@media (prefers-reduced-motion:reduce){.audit,.item{animation:none}.comp[data-state=loading] .pill{animation:none}.choose{transition:none}}
+@media (max-width:900px),(max-height:560px){
+  .audit{margin-top:28px;padding:16px}
+  .audit-head{grid-template-columns:1fr}
+  .audit-status{text-align:left}
+  .components{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){.components{grid-template-columns:1fr}}
+
+.choose[hidden]{display:none}
+
+.audit-actions{display:flex;gap:8px}
+.audit-actions [hidden]{display:none}
+.chip.code{color:#3d6a7a}
+.item-name{color:#2b322e;font-weight:600}   /* all items equally prominent */
+/* Tighter cards so four fit beside each other on a laptop screen. */
+.comp{padding:clamp(8px,1.3vh,14px) 12px}
+.comp-icon{width:clamp(26px,4vh,36px);height:clamp(26px,4vh,36px);margin-bottom:2px}
+.comp-name{margin-bottom:4px}
+.comp-items{margin-top:clamp(6px,1vh,10px)}
+.item{padding:clamp(2px,.45vh,5px) 0;font-size:11.5px}
+.comp-summary{font-size:11.5px;line-height:1.4;margin-top:clamp(5px,.9vh,8px)}
+
+/* 5. Paper reader below the one-screen layout. */
+.reader{max-width:1120px;margin:0 auto 60px;padding:0 32px;--hl:rgba(240,190,40,.42)}
+.reader[hidden]{display:none}
+.reader-head{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 0 12px;display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:8px 28px;align-items:start}
+.reader-id{display:flex;flex-direction:column;gap:2px}
+.reader-title{font:normal 19px/1.25 Georgia,serif;color:#254c3e}
+.reader-source{font-size:12px}
+.reader-group{margin:0 0 6px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.swatch{width:14px;height:10px;border-radius:2px;background:var(--hl)}
+.reader-items{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 20px}
+.reader-items li{font-size:12px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px}
+.reader-item-name{color:#3c443f;margin-right:4px}
+.page-link{border:1px solid var(--line);background:#fff;color:var(--accent);border-radius:999px;padding:0 8px;font:inherit;font-size:11px;cursor:pointer}
+.page-link:hover{border-color:var(--active-line)}
+.not-found{font-size:11px;color:#a33b3b}
+.reader-status{grid-column:1/-1;margin:0;font-size:12px}
+.reader-status:empty{display:none}
+.reader-pages{display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:20px}
+.pdf-page{position:relative;background:#fff;border-radius:4px;box-shadow:0 1px 2px #0000000d,0 8px 24px #2a2f2b14;overflow:hidden;scroll-margin-top:150px}
+.pdf-page canvas{display:block}
+/* Minimal PDF.js text layer: invisible, selectable text positioned over the canvas. */
+.textLayer{position:absolute;inset:0;overflow:hidden;line-height:1;text-align:initial;forced-color-adjust:none;transform-origin:0 0}
+.textLayer span,.textLayer br{color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0 0}
+.textLayer span.hl{position:static;background:var(--hl);border-radius:2px;mix-blend-mode:multiply}
+.textLayer .markedContent{top:0;height:0}
+@media (max-width:900px){
+  .reader{padding:0 16px}
+  .reader-head{grid-template-columns:1fr}
+  .pdf-page{max-width:100%}
+}
+.textLayer span.hl.pulse{animation:hlpulse 1.2s ease 2}
+@media (prefers-reduced-motion:reduce){.textLayer span.hl.pulse{animation:none}}
+
+/* Item rows: name and status on the first line, "Show evidence" beneath the name. */
+.item{display:grid;grid-template-columns:1fr auto;column-gap:8px;row-gap:1px;align-items:baseline}
+.evidence{grid-column:1;justify-self:start;border:0;background:none;padding:0;font:inherit;font-size:10.5px;font-weight:600;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px;text-decoration-color:#a9bcae}
+.evidence:hover{text-decoration-color:var(--accent)}
+.item.selected{background:#f3f7f1;box-shadow:-6px 0 0 #f3f7f1,6px 0 0 #f3f7f1}
+.item.selected .evidence{text-decoration:none}
+.item.selected .evidence::after{content:' ↓'}
+.reader-ctx{font-weight:400;color:var(--muted);margin-left:4px}
+.reader-note{margin:0 0 6px;font-size:12px;color:#4c5b50;max-width:70ch}
+.reader-where{margin:0;font-size:12px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.item{padding:clamp(2px,.3vh,4px) 0;row-gap:0;line-height:1.35}
+.comp-items{margin-top:clamp(5px,.8vh,8px)}
+.comp-summary{margin-top:clamp(4px,.7vh,7px)}
+
+/* Horizontal reader: the reader fills one screen; pages sit side by side and turn left/right. */
+.reader{height:100vh;height:100dvh;margin:0 auto;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.reader-head{position:static;min-height:clamp(96px,14vh,128px)}
+.reader-back{align-self:start;margin-top:6px;border:0;background:none;padding:0;font:inherit;font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.reader-pages{position:relative;flex-direction:row;align-items:center;justify-content:flex-start;gap:28px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:12px max(24px,calc(50% - var(--page-w,400px) / 2));min-height:0}
+.reader-pages:focus-visible{outline:3px solid #608d78;outline-offset:-3px}
+.pdf-page{flex:none;scroll-margin-top:0}
+.reader-nav{display:flex;justify-content:center;align-items:center;gap:18px;padding:8px 0 14px}
+.reader-nav .btn:disabled{opacity:.4;cursor:default}
+.reader-pos{font-size:12.5px;color:#4c5b50;min-width:96px;text-align:center}
+
+/* Readable pages: each page fills the reader's width and scrolls vertically in its slot. */
+.reader-pages{align-items:stretch;gap:20px;padding:10px max(12px,calc(50% - var(--page-w,600px) / 2))}
+.pdf-slot{flex:none;height:100%;overflow:auto;display:block;padding:0 8px 0 0;scrollbar-gutter:stable;overscroll-behavior-y:contain}
+.pdf-slot .pdf-page{margin:4px auto 16px}
+.reader-nav{position:relative;flex-wrap:wrap}
+.zoom{display:flex;align-items:center;gap:4px;margin-left:12px;padding-left:16px;border-left:1px solid var(--line)}
+.zoom-btn{min-width:30px;height:30px;border:1px solid var(--line);background:#fff;color:var(--accent);border-radius:6px;font:inherit;font-size:13px;cursor:pointer;padding:0 8px}
+.zoom-btn:disabled{opacity:.4;cursor:default}
+.zoom-level{font-size:12px;color:#4c5b50;min-width:42px;text-align:center}
+.reader-head{min-height:0;padding:10px 0 8px}
+
+/* Highlight colour = status colour of the selected item (same palette as the chips). */
+.reader{--hl:rgba(240,185,30,.42);--hl-strong:rgba(240,170,20,.75);--tone:#7a5826}
+.reader[data-tone=ok]{--hl:rgba(64,150,90,.30);--hl-strong:rgba(64,150,90,.6);--tone:#2f6048}
+.reader[data-tone=part]{--hl:rgba(240,185,30,.42);--hl-strong:rgba(240,170,20,.75);--tone:#7a5826}
+.reader[data-tone=miss]{--hl:rgba(214,72,60,.26);--hl-strong:rgba(214,72,60,.55);--tone:#a33b3b}
+.reader[data-tone=code]{--hl:rgba(61,106,122,.26);--hl-strong:rgba(61,106,122,.55);--tone:#3d6a7a}
+.reader-tone{color:var(--tone);font-weight:600}
+@keyframes hlpulse{50%{background:var(--hl-strong)}}
+
+/* "Show evidence": a small button under the status chip, in the status colour. */
+.evidence{grid-column:2;justify-self:end;margin:2px 0 1px;padding:1px 7px;border:1px solid;border-radius:5px;font:inherit;font-size:10px;font-weight:600;line-height:1.5;cursor:pointer;text-decoration:none;background:#fff}
+.evidence.ok{color:#2f6048;border-color:#a9c9b2;background:#f1f8f3}
+.evidence.part{color:#7a5826;border-color:#e2c792;background:#fdf7ea}
+.evidence.miss{color:#a33b3b;border-color:#e4b0aa;background:#fcf1ef}
+.evidence.code{color:#3d6a7a;border-color:#aac3cc;background:#eff5f7}
+.evidence:hover{filter:brightness(.96);border-color:currentColor}
+.item.selected .evidence{color:#fff;border-color:transparent}
+.item.selected .evidence.ok{background:#2f6048}
+.item.selected .evidence.part{background:#9a6f2c}
+.item.selected .evidence.miss{background:#a33b3b}
+.item.selected .evidence.code{background:#3d6a7a}
+.item.selected .evidence::after{content:' ↓'}
+.evidence{margin:1px 0 0;padding:0 6px;font-size:9.5px;line-height:1.45}
+.item{padding:clamp(2px,.25vh,3px) 0}
+.comp-summary{line-height:1.35}
+.comp{padding-bottom:clamp(6px,1vh,11px)}
+
+/* "Show evidence" back to an underlined text link, right-aligned under the status, in the status colour. */
+.evidence,.evidence.ok,.evidence.part,.evidence.miss,.evidence.code{grid-column:2;justify-self:end;text-align:right;background:none;border:0;border-radius:0;padding:0;margin:1px 0 0;font-size:10.5px;font-weight:600;line-height:1.4;text-decoration:underline;text-underline-offset:2px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
+.evidence:hover{filter:none;text-decoration-color:currentColor}
+.item.selected .evidence,.item.selected .evidence.ok,.item.selected .evidence.part,.item.selected .evidence.miss,.item.selected .evidence.code{background:none;text-decoration:none}
+.item.selected .evidence.ok{color:#2f6048}.item.selected .evidence.part{color:#7a5826}.item.selected .evidence.miss{color:#a33b3b}.item.selected .evidence.code{color:#3d6a7a}
+.chip{justify-self:end;text-align:right}
+/* "Show evidence": plain black underlined link. */
+.evidence,.evidence.ok,.evidence.part,.evidence.miss,.evidence.code,
+.item.selected .evidence.ok,.item.selected .evidence.part,.item.selected .evidence.miss,.item.selected .evidence.code{color:var(--ink);font-weight:400;text-decoration-color:#9aa29c}
+.evidence:hover{text-decoration-color:var(--ink)}
+
+/* Active step: a thin outline only. */
+.step.current{box-shadow:none;border:1px solid var(--active-line)}
+/* Card being analyzed: no outline; it grows slightly and settles back when done. */
+.comp{transition:opacity .3s ease,transform .35s ease,box-shadow .35s ease;transform-origin:center}
+.comp[data-state=loading]{border-color:var(--line);box-shadow:0 8px 24px #2a2f2b1f;transform:scale(1.045);position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){.comp[data-state=loading]{transform:none}}
+
+/* Evidence tabs above the paper. */
+.reader-head{display:flex;align-items:center;gap:10px;min-height:0;padding:12px 0 10px}
+.ev-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.ev-tab{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:3px 12px;font:inherit;font-size:12px;cursor:pointer}
+.ev-tab:hover{border-color:var(--active-line)}
+.ev-tab[aria-current]{background:var(--hl);border-color:transparent;font-weight:600}
+.reader-status{margin:0}
+.ev-for{font-weight:600;font-size:13px;color:var(--ink);white-space:nowrap}
+.reader-head{align-items:flex-start}.ev-for{padding-top:4px;line-height:1.4}.ev-tab{line-height:1.4}
+/* Selected item: no background tint; only the "↓" on its link marks it. */
+.item.selected{background:none;box-shadow:none}
+
+/* Folder-style cards: the verdict is a tab on the top-left; the body below scrolls if needed. */
+.comp,.comp[data-state=loading]{background:none;border:0;border-radius:0;padding:0;overflow:visible;align-items:stretch;text-align:left;box-shadow:none}
+.comp-body{flex:1;min-height:0;width:100%;background:#fff;border:1px solid var(--line);border-radius:0 var(--radius) var(--radius) var(--radius);padding:clamp(8px,1.3vh,14px) 12px clamp(6px,1vh,11px);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:auto;transition:box-shadow .35s ease}
+.comp[data-state=loading] .comp-body{box-shadow:0 8px 24px #2a2f2b1f}
+.comp > .pill{align-self:flex-start;position:relative;z-index:1;margin-bottom:-1px;padding:3px 14px 3px;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;font-size:11px;line-height:1.3}
+.comp > .pill.ok{border-color:#c4dccb}.comp > .pill.part{border-color:#ecd7ae}.comp > .pill.miss{border-color:#efc9c4}
+.comp-name{margin-top:2px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+#auditTitle:focus{outline:none}
+
+/* One "evidence" link per card, after the summary. */
+.comp-evidence{align-self:flex-end;margin-top:auto;padding:6px 0 0;border:0;background:none;font:inherit;font-size:11.5px;color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:2px;text-decoration-color:#9aa29c}
+.comp-evidence:hover{text-decoration-color:var(--ink)}
+.comp-evidence[aria-pressed=true]::after{content:' ↓'}
+.item{display:flex}
+/* Each highlighted sentence takes the colour of the item it supports. */
+.textLayer span.hl.t-ok{--c:rgba(64,150,90,.30);--cs:rgba(64,150,90,.6)}
+.textLayer span.hl.t-part{--c:rgba(240,185,30,.42);--cs:rgba(240,170,20,.75)}
+.textLayer span.hl.t-miss{--c:rgba(214,72,60,.26);--cs:rgba(214,72,60,.55)}
+.textLayer span.hl.t-code{--c:rgba(61,106,122,.26);--cs:rgba(61,106,122,.55)}
+.textLayer span.hl{background:var(--c,var(--hl))}
+@keyframes hlpulse{50%{background:var(--cs,var(--hl-strong))}}
+.ev-tab[aria-current][data-tone=ok]{background:rgba(64,150,90,.30)}
+.ev-tab[aria-current][data-tone=part]{background:rgba(240,185,30,.42)}
+.ev-tab[aria-current][data-tone=miss]{background:rgba(214,72,60,.26)}
+.ev-tab[aria-current][data-tone=code]{background:rgba(61,106,122,.26)}
+
+/* Reader header: card name, item filters, then evidence tabs. */
+.reader-head{display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:8px;align-items:start}
+.ev-for{grid-column:1;grid-row:1 / span 2}
+.ev-filters{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
+.ev-tabs{grid-column:2}
+.reader-status{grid-column:1 / -1}
+.ev-filter{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:6px;padding:3px 10px;font:inherit;font-size:12px;line-height:1.4;cursor:pointer}
+.ev-filter:hover:not(:disabled){border-color:var(--active-line)}
+.ev-filter[aria-pressed=true]{border-color:var(--ink);font-weight:600}
+.ev-filter:disabled{color:#a3aaa5;border-style:dashed;cursor:not-allowed}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot[data-tone=ok]{background:#4f9a69}.dot[data-tone=part]{background:#d9a52c}.dot[data-tone=miss]{background:#c9564b}.dot[data-tone=code]{background:#3d6a7a}
+.ev-filter:disabled .dot{opacity:.45}
+.ev-tab{font-size:11.5px;padding:2px 11px}
+
+/* Stage 2 locked when the paper cannot be rerun. */
+.stage{position:relative}
+.stage-warning{position:absolute;top:-10px;left:50%;transform:translateX(-50%);margin:0;z-index:2;white-space:nowrap;background:#a33b3b;color:#fff;font-size:10px;font-weight:700;letter-spacing:.3px;padding:2px 10px;border-radius:999px}
+.stage-warning[hidden]{display:none}
+.stage.locked{border-top-color:#c9ccc7}
+.stage.locked .stage-label,.stage.locked .stage-label span{color:#a3aaa5}
+.stage.locked .step{background:#f1f2ef;border-color:#dfe1dc;cursor:not-allowed}
+.stage.locked .step strong{color:#a3aaa5}
+.stage.locked .icon{stroke:#b4bab5}
+
+/* Seam lines on each card (Expected vs. Found). */
+.comp-summary.seam{display:flex;flex-direction:column;gap:3px;text-align:left}
+.seam-line{display:block}
+.seam-line b{font-weight:600;color:var(--ink);margin-right:2px}
+
+/* Email-to-authors dialog. */
+#mailDialog{width:min(680px,calc(100vw - 32px));border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:24px 26px;box-shadow:0 16px 55px #0002}
+#mailDialog::backdrop{background:#1b2924a0}
+.mail h2{font:normal 22px Georgia,serif;margin:0 0 4px}
+.mail .muted{font-size:12.5px;margin:0 0 6px}
+.mail label{display:block;font-size:12px;font-weight:600;margin:12px 0 5px}
+.mail input,.mail textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;font:inherit;font-size:13px;color:var(--ink)}
+.mail textarea{resize:vertical;line-height:1.5;min-height:220px;max-height:46vh}
+.mail input:focus-visible,.mail textarea:focus-visible{outline:3px solid #608d78;outline-offset:1px}
+.mail-note{font-size:12px;color:#7a5826;margin:10px 0 0}
+.mail-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:16px}
+.mail-actions #mailStatus{margin-right:auto;font-size:12px}
+.audit-actions [hidden]{display:none}
+
+/* Results actions: red request button; gray, disabled next stage when locked. */
+.btn.danger{background:#a33b3b;border-color:#a33b3b;color:#fff}
+.btn.danger:hover{background:#8f3030}
+#toStage2:disabled{background:#e4e6e2;border-color:#d6d9d4;color:#8b928d;opacity:1;cursor:not-allowed}
+.audit-head{grid-template-columns:auto 1fr}.audit-actions{grid-column:2;justify-self:end}
+/* Calmer warnings: red outline and red text on a light background. */
+.btn.danger{background:#fff;border-color:#c98a84;color:#a33b3b}
+.btn.danger:hover{background:#fcf1ef;border-color:#a33b3b}
+.stage-warning{background:var(--bg);color:#a33b3b;border:1px solid #c98a84;font-weight:600}
+
+.mail-found{margin:6px 0 0;font-size:12px;color:#2f6048}
+.mail-found.searching{color:var(--muted);animation:pulse 1s ease-in-out infinite}
+.mail-found.missing{color:#a33b3b}
+@media (prefers-reduced-motion:reduce){.mail-found.searching{animation:none}}
+/* Step titles in the serif used for headings, regular weight. */
+.step strong{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:14px;line-height:1.3;letter-spacing:-.1px}
+
+/* Action footer under the cards (option C). */
+.audit{grid-template-rows:auto minmax(0,1fr)}
+.audit-head{grid-template-columns:1fr}
+.audit-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:2px}
+.audit-foot[hidden]{display:none}
+.audit-sum{font-size:12.5px;color:#4c5b50;margin-right:auto}
+.audit-sum.miss{color:#a33b3b}
+.foot-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;color:var(--accent);border-radius:6px;padding:6px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.foot-btn:hover{border-color:var(--active-line)}
+.foot-btn[hidden]{display:none}
+.foot-btn .ico{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.foot-btn.danger{color:#a33b3b;border-color:#c98a84;background:#fff}
+.foot-btn.danger:hover{background:#fcf1ef;border-color:#a33b3b}
+.foot-btn.next{background:#315b4c;border-color:#315b4c;color:#fff}
+.foot-btn.next .ico-lock{display:none}
+.foot-btn.next:disabled{background:none;border-color:transparent;color:#9aa29c;cursor:not-allowed;padding-left:4px;padding-right:4px}
+.foot-btn.next:disabled .ico-lock{display:block}
+.foot-btn.next:disabled .ico-arrow{display:none}
+#toStage2.foot-btn.next:disabled{background:none;border-color:transparent;color:#9aa29c}
+#toStage2.foot-btn.next:not(:disabled){background:#315b4c;border-color:#315b4c;color:#fff}
+.audit{gap:clamp(6px,1vh,10px);padding-bottom:clamp(8px,1.2vh,12px)}
+.foot-btn{padding:5px 11px}
+
+/* Request button placed on the locked Stage 2 steps. */
+.stage-unlock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;box-shadow:0 2px 10px #2a2f2b14;white-space:nowrap}
+.stage-unlock[hidden]{display:none}
+
+/* Warning and request combined in one pill on the Stage 2 line. */
+.stage-warning{display:flex;align-items:stretch;padding:0;overflow:hidden;font-weight:600}
+.stage-warning[hidden]{display:none}
+.warn-text{padding:3px 10px 3px 12px;display:flex;align-items:center}
+.warn-action{display:flex;align-items:center;gap:5px;border:0;border-left:1px solid #c98a84;background:none;color:#a33b3b;font:inherit;font-size:10px;font-weight:600;letter-spacing:.3px;padding:3px 12px 3px 10px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;text-decoration-color:#d9a8a3}
+.warn-action:hover{background:#fcf1ef;text-decoration-color:currentColor}
+.warn-action:focus-visible{outline:3px solid #608d78;outline-offset:-3px}
+.warn-action .ico{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* Header links in the "evidence" style: minimal, underlined, larger, coloured by meaning. */
+.audit-head{grid-template-columns:auto 1fr}
+.head-links{grid-column:2;justify-self:end;display:flex;align-items:center;gap:26px}
+.head-links[hidden],.head-link[hidden]{display:none}
+.head-link{display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:2px 0;font:inherit;font-size:14px;cursor:pointer;color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;text-decoration-color:#9aa29c}
+.head-link:hover{text-decoration-color:currentColor}
+.head-link .ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.head-link.request.danger{color:#a33b3b;text-decoration-color:#d9a8a3}
+.head-link.request.danger:hover{text-decoration-color:#a33b3b}
+.head-link.next{color:var(--accent);text-decoration-color:#9fb8a8}
+.head-link.next .ico-lock{display:none}
+.head-link.next:disabled{color:#9aa29c;cursor:not-allowed;text-decoration-style:dotted;text-decoration-color:#b9bfba}
+.head-link.next:disabled .ico-lock{display:block}
+.head-link.next:disabled .ico-arrow{display:none}
+
+.btn[aria-disabled=true]{background:#e4e6e2;border-color:#d6d9d4;color:#8b928d;cursor:not-allowed}
+.head-link{white-space:nowrap}
+.head-link.back{color:var(--ink)}
+
+/* Three steps: Stage 1 has two, Stage 2 one; all three boxes stay the same width. */
+.stages{grid-template-columns:calc((100% - 40px) * 2 / 3 + 20px) 1fr}
+#stage2 .steps{grid-template-columns:1fr}
+@media (max-width:900px),(max-height:560px){.stages{grid-template-columns:1fr}}
+
+/* Download confirmation (opens from "Next stage"). */
+#getDialog{width:min(520px,calc(100vw - 32px));border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:24px 26px;box-shadow:0 16px 55px #0002}
+#getDialog::backdrop{background:#1b2924a0}
+.get-list{list-style:none;margin:14px 0 0;padding:0}
+.get-item{display:grid;grid-template-columns:auto 1fr auto;column-gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.get-item:last-child{border-bottom:1px solid var(--line)}
+.get-item .icon{width:28px;height:28px}
+.get-text{display:flex;flex-direction:column;line-height:1.35}
+.get-text strong{font-weight:600;font-size:13.5px}
+.get-text .muted{font-size:12px}
+.get-size{font-size:12.5px;color:#4c5b50;font-variant-numeric:tabular-nums;white-space:nowrap}
+.get-item.done .get-size{color:#2f6048}
+.get-progress{grid-column:2 / -1;height:4px;margin-top:8px;border-radius:2px;background:#e8ebe6;overflow:hidden;display:none}
+#getDialog.downloading .get-progress{display:block}
+.get-progress .bar{display:block;height:100%;width:0;background:var(--accent);transition:width .12s linear}
+.get-total{margin:10px 0 0;font-size:12.5px;font-weight:600;text-align:right}
+#getDialog .mail-actions [hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.get-progress .bar{transition:none}}
+
+/* Stage 2 view: placeholder until the stage is designed. */
+.stage2-view[hidden]{display:none}
+.s2-body{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--radius);min-height:0}
+.s2-ready{margin:0 0 4px;font:normal 18px Georgia,serif;color:#254c3e}
+.s2-body .muted{margin:0;font-size:13px}
+#s2Title:focus{outline:none}
+@media (max-width:560px){
+  .audit-head{grid-template-columns:1fr}
+  .head-links{grid-column:1;justify-self:start;flex-wrap:wrap;gap:8px 22px}
+}
+
+/* No rule above the stage labels. */
+.stage,.stage+.stage,.stage.locked{border-top:0}
+
+/* Stage 2, part A: rerun pipeline, results, seams; part B placeholder. */
+.stage2-view{grid-template-rows:auto auto minmax(0,1fr)}
+.pipeline{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pipe-step{position:relative;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(6px,1vh,9px) 12px;transition:opacity .3s ease,box-shadow .3s ease,transform .3s ease}
+.pipe-step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:#9aa49b;font-size:12px}
+.pipe-step .icon{grid-row:1 / span 2;width:clamp(22px,3.2vh,28px);height:clamp(22px,3.2vh,28px)}
+.pipe-text{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.pipe-text strong{font-size:12.5px;font-weight:600}
+.pipe-detail{font-size:11px;color:var(--muted)}
+.pipe-state{grid-column:2;font-size:11px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.pipe-step[data-state=waiting]{opacity:.45}
+.pipe-step[data-state=running]{box-shadow:0 8px 24px #2a2f2b1f;transform:scale(1.03);z-index:1}
+.pipe-step[data-state=running] .pipe-state{color:var(--accent);animation:pulse 1s ease-in-out infinite}
+.pipe-step[data-state=done] .pipe-state{color:#2f6048}
+.pipe-step[data-state=done] .pipe-state::before{content:'✓ '}
+.s2-grid{display:grid;grid-template-columns:1.45fr 1fr .72fr;gap:14px;min-height:0}
+.s2-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(8px,1.3vh,13px) 14px;min-height:0;overflow:auto;display:flex;flex-direction:column}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.s2-panel h3{margin:0;font:normal 15px Georgia,serif;color:#254c3e}
+.res-sum{font-size:11.5px;font-weight:600;color:#2f6048}
+.claims,.seam-list{list-style:none;margin:0;padding:0}
+.claim,.seam-item{padding:clamp(4px,.7vh,7px) 0;border-top:1px solid #eef0ec;animation:fadein .25s ease}
+.claim-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.claim-text{font-size:12.5px;color:#2b322e;line-height:1.35}
+.claim-top .chip{flex:none;font-size:11px}
+.claim-nums{font-size:11.5px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+.claim-nums b{color:#2b322e;font-weight:600}
+.claim-note{margin:2px 0 0;font-size:11px;color:#7a5826;line-height:1.35}
+.seam-item .item-name{font-size:12px}
+.seam-found{margin:1px 0 0;font-size:11.5px;color:#5c655e;line-height:1.35}
+.panel-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto;padding-top:8px}
+.provenance{font-size:10.5px;color:var(--muted);line-height:1.35}
+.panel-foot .comp-evidence{margin:0;padding:0;flex:none;align-self:flex-end}
+.panel-foot [hidden]{display:none}
+.s2-next{align-items:center;justify-content:center;text-align:center;background:#eceeea;border:1.5px dashed #b4bbb5;color:#7d857f}
+.s2-next .icon{stroke:#9aa29c;width:30px;height:30px;margin-bottom:6px}
+.s2-next h3{color:#5c655e;font-size:14px;margin-bottom:6px}
+.s2-next p{margin:0 0 10px;font-size:11.5px;line-height:1.45;color:#7d857f}
+.soon{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:#8a928c;border:1px solid #c3c9c4;border-radius:999px;padding:1px 9px}
+/* All compared values. */
+#valuesDialog{width:min(760px,calc(100vw - 32px));border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:24px 26px;box-shadow:0 16px 55px #0002}
+#valuesDialog::backdrop{background:#1b2924a0}
+.table-wrap{overflow-x:auto;margin-top:10px}
+.values-table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+.values-table th{text-align:left;font-size:11px;font-weight:600;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.values-table td{padding:6px 8px;border-bottom:1px solid #eef0ec;white-space:nowrap}
+.values-table td.chip{font-size:11.5px}
+@media (prefers-reduced-motion:reduce){.pipe-step,.claim,.seam-item{animation:none;transition:none}.pipe-step[data-state=running]{transform:none}.pipe-step[data-state=running] .pipe-state{animation:none}}
+@media (max-width:900px),(max-height:560px){
+  .pipeline{grid-template-columns:1fr 1fr}
+  .pipe-step::after{content:none!important}
+  .s2-grid{grid-template-columns:1fr}
+  .s2-panel{overflow:visible}
+}
+@media (max-width:560px){.pipeline{grid-template-columns:1fr}}
+.s2-grid{grid-template-columns:1.4fr 1.1fr .62fr}
+.claim,.seam-item{display:grid;grid-template-columns:1fr auto;column-gap:10px;align-items:baseline}
+.claim-top{display:contents}
+.claim-nums,.seam-found{grid-column:1 / -1}
+@media (max-width:900px),(max-height:560px){.s2-grid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr 1fr}.pipe-step[data-state=running]{transform:none}}
+@media (max-width:560px){.pipeline{grid-template-columns:1fr}}
+.panel-foot{justify-content:flex-end}
+.s2-grid{grid-template-columns:1.9fr 1fr}
+@media (max-width:900px),(max-height:560px){.s2-grid{grid-template-columns:1fr}}
+/* "explain" under each claim: right-aligned link, the explanation opens in place. */
+.claim{grid-template-columns:1fr auto}
+.claim .claim-nums{grid-column:1}
+.claim-explain-btn{grid-column:2;grid-row:2;justify-self:end;align-self:baseline;margin:0;padding:0;font-size:11.5px}
+.claim-explain-btn[aria-expanded=true]::after{content:' ↑'}
+.claim-explain{grid-column:1 / -1;margin:6px 0 2px;padding:8px 10px;background:#f6f7f3;border-radius:6px;display:flex;flex-direction:column;gap:4px;animation:fadein .2s ease}
+.claim-explain[hidden]{display:none}
+.explain-line{margin:0;font-size:11.5px;line-height:1.45;color:#3c443f}
+.explain-line b{font-weight:600;color:var(--ink);margin-right:3px}
+@media (prefers-reduced-motion:reduce){.claim-explain{animation:none}}
+.claim-explain{margin:4px 0 1px;padding:6px 10px;gap:2px}.explain-line{line-height:1.4}
+.claim-error{padding:10px 0;font-size:12.5px;color:#a33b3b}
+.explain-text{margin:0;font-size:12px;line-height:1.55;color:#3c443f}
+.s2-grid{grid-template-columns:2.6fr 1fr}
+@media (max-width:900px),(max-height:560px){.s2-grid{grid-template-columns:1fr}}
+/* Loading placeholder under "Reproduction results" while the rerun replays. */
+.claims-wait{font-size:11.5px;color:var(--muted);padding:2px 0 6px}
+.claim-loading{animation:pulse 1.2s ease-in-out infinite}
+.claim-loading .bar{display:block;height:9px;border-radius:4px;background:#e7eae5}
+.claim-loading .bar-text{width:62%;margin:3px 0}
+.claim-loading .bar-chip{width:64px;justify-self:end;margin:3px 0}
+.claim-loading .bar-nums{grid-column:1;width:34%;margin:4px 0 2px}
+@media (prefers-reduced-motion:reduce){.claim-loading{animation:none}}
+
+/* "explain" and "show code" side by side under the status. */
+.claim-links{grid-column:2;grid-row:2;justify-self:end;align-self:baseline;display:flex;gap:14px}
+.claim-links .comp-evidence{margin:0;padding:0;font-size:11.5px}
+.claim-code-btn[aria-pressed=true]::after{content:' ↓'}
+
+/* Code viewer below the page (same placement as the paper reader). */
+.code-view{max-width:1120px;margin:0 auto;padding:0 32px;height:100vh;height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);border-top:1px solid var(--line)}
+.code-view[hidden]{display:none}
+.code-head{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start;padding:12px 0 8px}
+.code-meta{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;padding:0 0 8px;font-size:12px}
+.code-origin{font-weight:600;color:#2b322e}
+.code-link{color:var(--ink);text-decoration-color:#9aa29c;text-underline-offset:2px}
+.code-link[hidden]{display:none}
+.code-note{flex-basis:100%;margin:2px 0 0;color:#5c655e}
+.code-box{margin:0 0 16px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:10px 0;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#2b322e;tab-size:4}
+.code-box:focus-visible{outline:3px solid #608d78;outline-offset:2px}
+.code-line{display:flex;padding:0 14px 0 0;white-space:pre}
+.code-line.hot{background:rgba(64,150,90,.16)}
+.ln{flex:none;width:44px;padding-right:12px;text-align:right;color:#a3aaa5;user-select:none}
+.code-line.hot .ln{color:#2f6048;font-weight:600}
+@media (max-width:900px){.code-view{padding:0 16px}}
+.code-box{position:relative}
+/* Results and the next-test placeholder share the width equally. */
+.s2-grid{grid-template-columns:1fr 1fr}
+@media (max-width:900px),(max-height:560px){.s2-grid{grid-template-columns:1fr}}
+/* One "show code" link at the bottom left of the results panel, like "evidence" in Stage 1. */
+.s2-results .panel-foot{justify-content:flex-start}
+.s2-results .panel-foot .comp-evidence{align-self:flex-start}
+.s2-results .panel-foot [hidden]{display:none}
+/* Code viewer header: result filters above the file tabs, as in the paper reader. */
+.code-head{grid-template-columns:auto 1fr;row-gap:8px}
+.code-head .ev-for{grid-row:1 / span 2}
+.code-head .ev-filters{grid-column:2}
+.code-head .ev-tabs{grid-column:2}
+.s2-results .panel-foot{justify-content:flex-end}
+.s2-results .panel-foot .comp-evidence{align-self:flex-end}
+
+/* Alternative hypotheses panel: same row pattern as the reproduction results. */
+.alt-example{grid-column:1 / -1;font:italic 12px/1.4 Georgia,serif;color:#4c5b50;margin:1px 0}
+.claim.alt .claim-nums{grid-column:1}
+.claim.alt .claim-links{grid-row:3}
+.s2-alt .panel-foot{justify-content:flex-end}
+.s2-alt .panel-foot .comp-evidence{align-self:flex-end}
+.s2-alt .panel-foot [hidden]{display:none}
+.s2-alt{background:#fff;border:1px solid var(--line);align-items:stretch;justify-content:flex-start;text-align:left;color:inherit}
+
+/* Activation viewer: each statement as token boxes coloured by the probe's reading. */
+.act-legend{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:6px 0 0;color:#5c655e}
+.act-legend .tok{font-size:11px}
+.sw-true{background:rgba(64,150,90,.45)}
+.sw-false{background:rgba(214,72,60,.45)}
+.act-list{margin:0 0 16px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:6px 14px}
+.act-list:focus-visible{outline:3px solid #608d78;outline-offset:2px}
+.act-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid #eef0ec}
+.act-row:first-child{border-top:0}
+.act-tokens{display:flex;flex-wrap:wrap;gap:2px;min-width:0}
+.tok{display:inline-block;padding:2px 3px;border:1px solid #e7e8e3;border-radius:3px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);white-space:pre}
+.tok.last{border-color:#6c726e;font-weight:700}
+.act-result{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.act-label{font-size:11.5px;color:var(--muted)}
+.act-result .chip{font-size:12px}
+.code-meta .code-note{margin-bottom:0}
+.s2-alt .panel-head{margin-bottom:2px;row-gap:0}
+.s2-alt .claim{padding:clamp(3px,.5vh,5px) 0}
+.alt-example{margin:0;line-height:1.3;font-size:11.5px}
+.s2-alt .claim-text{font-size:12px;line-height:1.3}
+.s2-alt .claim-nums{font-size:11px;margin-top:0}
+.s2-alt .panel-foot{padding-top:4px}
+.s2-alt{padding-top:clamp(6px,1vh,10px);padding-bottom:clamp(6px,1vh,10px)}.s2-alt .panel-foot{padding-top:2px}
+.alt-gloss{font-style:normal;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:11px;color:var(--muted)}
+/* Expected / Found: label on its own line; the block sits low in the card, just above "evidence". */
+.comp-summary.seam{margin-top:auto;padding-top:clamp(6px,1vh,10px);gap:clamp(4px,.8vh,8px)}
+.seam-line b{display:block;margin:0 0 1px}
+.comp-summary.seam + .comp-evidence{margin-top:clamp(4px,.8vh,8px)}
+
+/* ===================== UX fixes (Nov 2026). Previous version: backups/simple-before-ux-fixes/ ===================== */
+
+/* Header row: title + overall verdict, then tools, then actions. */
+.audit-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
+.audit-paper{flex:1 1 auto;min-width:0}
+.head-links{margin-left:0}
+.head-tools{display:flex;align-items:center;gap:16px}
+.skip-link,.legend-link{border:0;background:none;padding:0;font:inherit;font-size:12.5px;color:#4c5b50;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#b9bfba}
+.skip-link:hover,.legend-link:hover{color:var(--ink);text-decoration-color:currentColor}
+.skip-link[hidden]{display:none}
+.legend-link::before{content:'ⓘ ';text-decoration:none;display:inline-block;margin-right:2px}
+
+/* #7 The overall result, next to the paper title. */
+.audit-verdict{font-size:13px;font-weight:600}
+.audit-verdict:empty{display:none}
+.audit-verdict.miss{color:#a33b3b}
+.audit-verdict.ok{color:#2f6048}
+
+/* #5 Token readings: blue = true, orange = false (colour-blind safe). */
+.sw-true{background:rgba(37,110,190,.45)}
+.sw-false{background:rgba(225,120,25,.45)}
+
+/* #9 Links say what they do: "→" opens a viewer, "⌄" expands in place. */
+.comp-evidence::after,.comp-evidence[aria-pressed]::after,.comp-evidence[aria-pressed=true]::after{content:' →'}
+.comp-evidence.claim-explain-btn::after{content:' ⌄'}
+.comp-evidence.claim-explain-btn[aria-expanded=true]::after{content:' ⌃'}
+
+/* #13 The card being analysed lifts gently instead of jumping. */
+.comp[data-state=loading]{transform:scale(1.02)}
+.pipe-step[data-state=running]{transform:scale(1.02)}
+
+/* #16 #11 Paper sheets: one plain line under each; the upload placeholder is clearly not available yet. */
+.sheet{height:calc(100cqh - 18px - 34px - 26px - clamp(10px,1.8vh,18px))}
+.sheet-desc{margin:0 0 8px;font-size:13px;line-height:1.35;color:#4c5b50;max-width:260px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+/* #18 Choose which questions go into the email. */
+.mail-qs{margin:12px 0 0;padding:8px 10px 6px;border:1px solid var(--line);border-radius:6px;background:#fff;max-height:150px;overflow:auto}
+.mail-qs legend{font-size:12px;font-weight:600;padding:0 4px}
+.mail-q{display:flex;align-items:baseline;gap:8px;margin:0;padding:3px 0;font-size:12.5px;font-weight:400;cursor:pointer}
+.mail-q input{accent-color:var(--accent);margin:0;position:relative;top:1px}
+.mail-q-group{margin-left:auto;color:var(--muted);font-size:11.5px}
+.mail textarea{min-height:170px}
+
+/* #6 Glossary of labels. */
+#legendDialog{width:min(560px,calc(100vw - 32px));border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:22px 24px;box-shadow:0 16px 55px #0002}
+#legendDialog::backdrop{background:#1b2924a0}
+.legend h3{font:600 12px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.legend dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:13px}
+.legend dt{font-weight:600}
+.legend dd{margin:0;color:#3f4742}
+.legend-part[hidden]{display:none}
+
+/* #12 The agent's run as a checklist. */
+.agent-title{font-weight:600;color:#3f4742}
+.agent-step{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12.5px;color:#a3aaa5;border-top:1px solid #eef0ec}
+.agent-mark{width:14px;height:14px;flex:none;border:1.5px solid #c3c9c4;border-radius:50%}
+.agent-step[data-state=running]{color:var(--ink)}
+.agent-step[data-state=running] .agent-mark{border-color:var(--accent);border-top-color:transparent;animation:spin .8s linear infinite}
+.agent-step[data-state=done]{color:#3f4742}
+.agent-step[data-state=done] .agent-mark{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 2.5px #fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.agent-step[data-state=running] .agent-mark{animation:none}}
+.sheet-desc{max-width:340px}
+/* Header on one line. */
+.audit-paper{flex:1 1 0}
+.drawer-close{display:none}
+/* Step boxes: one fixed size in every state and at every window height (not clickable). */
+.step{height:105px;min-height:105px;padding:9px 14px;cursor:default}
+.step .icon{width:40px;height:40px}
+.step strong{margin-top:6px}
+@media (max-width:560px){.step{height:auto;min-height:96px}}
+/* Label glossary: a small ⓘ next to the labels it explains. */
+.audit-verdict-row,.res-sum-row{display:inline-flex;align-items:center;gap:6px}
+.audit-verdict-row:has(.audit-verdict:empty){display:none}
+.res-sum-row:has(.res-sum:empty){display:none}
+.info-btn{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:50%;background:none;color:#8a928c;cursor:pointer}
+.info-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.info-btn:hover{color:var(--ink);background:#eef2ec}
+.info-btn:focus-visible{outline:3px solid #608d78;outline-offset:1px}
+/* Header actions: two evenly spaced, baseline-aligned links. */
+.head-links{gap:24px;align-items:center}
+.head-link{font-size:14px;line-height:1.4;padding:2px 0}
+.head-link .ico{width:16px;height:16px}
+/* "explain" chevron: a drawn icon (the ⌄ character sat low and took the underline). */
+.comp-evidence.claim-explain-btn{display:inline-flex;align-items:center;gap:4px}
+.comp-evidence.claim-explain-btn::after,.comp-evidence.claim-explain-btn[aria-expanded=true]::after{
+  content:'';display:inline-block;width:10px;height:10px;flex:none;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  transition:transform .15s ease}
+.comp-evidence.claim-explain-btn[aria-expanded=true]::after{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){.comp-evidence.claim-explain-btn::after{transition:none}}
+/* Stage 1 header: the paper title, with the overall verdict and ⓘ underneath. */
+#audit .audit-paper{flex-direction:column;align-items:flex-start;gap:2px}
+#audit .audit-paper strong{line-height:1.2}
+/* The verdict line is always present: a muted placeholder while the analysis runs, then the result. */
+.audit-verdict-row,.audit-verdict-row:has(.audit-verdict:empty){display:inline-flex;min-height:20px}
+.audit-verdict.pending{color:var(--muted);font-weight:400}
+.audit-verdict.pending + .info-btn{visibility:hidden}
+.lead{max-width:900px}
+.audit-verdict:empty{display:inline-block;min-height:20px}
+/* Shorter laptop screens: tighter spacing inside the cards so "evidence" is never cut off. */
+@media (max-height:800px) and (min-width:901px){
+  .comp-body{padding-top:8px;padding-bottom:6px}
+  .comp-icon{width:26px;height:26px;margin-bottom:0}
+  .comp-name{margin-bottom:2px}
+  .comp-items{margin-top:4px}
+  .item{padding:1px 0;font-size:11.5px}
+  .comp-summary.seam{padding-top:4px;gap:3px}
+  .comp-summary,.seam-line{font-size:11.5px;line-height:1.35}
+  .comp-summary.seam + .comp-evidence{margin-top:3px}
+  .comp-evidence{padding-top:2px}
+  .audit{gap:8px;padding-top:10px;padding-bottom:10px}
+  .hero{padding-bottom:12px}
+  .how{padding-top:12px}
+}
+@media (max-height:720px) and (min-width:901px){
+  .lead{font-size:12.5px;line-height:1.5}
+  .logo{font-size:44px;margin-bottom:6px}
+  .comp-icon{display:none}
+}
+/* Five pipeline blocks: the hypothesis tests are the last step of the run. */
+.pipeline{grid-template-columns:repeat(5,1fr)}
+@media (max-width:900px),(max-height:560px){.pipeline{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.pipeline{grid-template-columns:1fr}}
+/* Activation viewer: one row per statement, only the last token coloured. */
+.act-sentence{display:flex;align-items:center;flex-wrap:wrap;gap:3px;min-width:0;font:13.5px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink)}
+.act-text{white-space:normal}
+.act-sentence .tok.last{min-width:20px;text-align:center}
+.act-row{padding:6px 0}
+.act-result{flex-direction:row;align-items:baseline;gap:12px}
+/* Next steps based on identified seams */
+.head-link.steps{color:var(--accent);text-decoration-color:#9fb8a8}
+#stepsDialog{width:min(680px,calc(100vw - 32px));border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:22px 24px;box-shadow:0 16px 55px #0002}
+#stepsDialog::backdrop{background:#1b2924a0}
+.next-steps{list-style:none;counter-reset:step;margin:14px 0 0;padding:0}
+.next-step{counter-increment:step;display:grid;grid-template-columns:28px 1fr auto;gap:4px 14px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.next-step::before{content:counter(step);width:24px;height:24px;border-radius:50%;background:var(--active-bg);color:var(--accent);font-weight:700;font-size:12.5px;display:grid;place-items:center}
+.next-text strong{display:block;font-size:14px;font-weight:600;color:var(--ink)}
+.next-text p{margin:3px 0 0;font-size:13px;line-height:1.5;color:#4c5b50}
+.next-btn{align-self:center;white-space:nowrap}
+/* "Next steps based on identified seams": always visible next to "How it works". */
+.how{position:relative}
+.steps-link{position:absolute;right:0;top:clamp(14px,2.6vh,28px);transform:translateY(-3px);display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:2px 0;font:inherit;font-size:13px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#9fb8a8}
+.steps-link:hover{text-decoration-color:currentColor}
+.steps-link .ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.steps-count{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:11.5px;font-weight:700;display:inline-grid;place-items:center;text-decoration:none}
+.steps-count[data-empty=true]{background:#c3c9c4}
+.steps-empty{margin:14px 0 0;font-size:13px}
+.steps-empty[hidden]{display:none}
+.next-step{grid-template-columns:28px 1fr auto}
+@media (max-width:900px){.steps-link{position:static;margin:0 auto 10px;display:flex;justify-content:center}}
+.claim.alt .claim-links{grid-row:2}
+.steps-link{transform:translateY(-11px);font-size:12.5px}.steps-count{height:18px;min-width:18px;font-size:11px}
+/* Header actions as buttons, matching the email dialog: outlined secondary + filled primary. */
+.head-link{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid #315b4c;border-radius:6px;background:#fff;color:#315b4c;font-size:13.5px;line-height:1.3;text-decoration:none;cursor:pointer}
+.head-link:hover{background:#f3f7f4;text-decoration:none}
+.head-link .ico{width:16px;height:16px}
+.head-link.request.danger{border-color:#c98a84;color:#a33b3b;background:#fff}
+.head-link.request.danger:hover{background:#fcf1ef;border-color:#a33b3b}
+.head-link.next{background:#315b4c;border-color:#315b4c;color:#fff}
+.head-link.next:hover{background:#284b3e}
+.head-link.next:disabled{background:#e4e6e2;border-color:#d6d9d4;color:#8b928d;cursor:not-allowed;text-decoration:none}
+.head-links{gap:10px}
+
+/* Next steps: messenger-style assistant in the bottom-right corner. */
+.assistant{position:fixed;right:20px;bottom:20px;z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.assistant-launcher{position:relative;width:52px;height:52px;border-radius:50%;border:0;background:#315b4c;color:#fff;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 20px #2a2f2b40;transition:transform .15s ease,background .15s ease}
+.assistant-launcher:hover{background:#284b3e;transform:translateY(-1px)}
+.assistant-launcher:focus-visible{outline:3px solid #608d78;outline-offset:3px}
+.assistant-launcher svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.assistant-launcher .steps-count{position:absolute;top:-4px;right:-4px;border:2px solid var(--bg);background:#a33b3b}
+.steps-count[data-empty=true]{background:#9aa29c}
+.steps-count.pulse{animation:badgepulse 1.2s ease 2}
+@keyframes badgepulse{50%{transform:scale(1.25)}}
+.assistant-panel{width:min(380px,calc(100vw - 32px));max-height:min(560px,calc(100vh - 110px));display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 48px #2a2f2b33;overflow:hidden;animation:assistantin .2s ease}
+.assistant-panel[hidden]{display:none}
+@keyframes assistantin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.assistant-head{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 14px;background:#315b4c;color:#fff}
+.assistant-avatar{width:32px;height:32px;border-radius:50%;background:#ffffff26;display:grid;place-items:center;flex:none}
+.assistant-avatar svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.assistant-id{display:flex;flex-direction:column;line-height:1.3;min-width:0;margin-right:auto}
+.assistant-id strong{font-size:13.5px;font-weight:600}
+.assistant-id span{font-size:11.5px;opacity:.8}
+.assistant-close{width:30px;height:30px;border:0;border-radius:8px;background:none;color:#fff;cursor:pointer;display:grid;place-items:center;flex:none}
+.assistant-close:hover{background:#ffffff1f}
+.assistant-close:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.assistant-close svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.assistant-body{padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.assistant .msg{margin:0;max-width:88%;padding:9px 12px;background:#fff;border:1px solid var(--line);border-radius:12px 12px 12px 4px;font-size:13px;line-height:1.5;color:#2b322e}
+.assistant .msg[hidden]{display:none}
+.assistant .next-steps{margin:0;display:flex;flex-direction:column;gap:10px}
+.assistant .next-step{display:block;padding:10px 12px 11px;background:#fff;border:1px solid var(--line);border-top:1px solid var(--line);border-radius:12px 12px 12px 4px}
+.assistant .next-step::before{display:none}
+.assistant .next-text strong{font-size:13.5px}
+.assistant .next-text strong::before{content:counter(step) '. ';color:var(--accent)}
+.assistant .next-text p{font-size:12.5px;line-height:1.5;margin:3px 0 0}
+.assistant .next-btn{margin-top:9px;padding:6px 12px;font-size:12.5px}
+@media (max-width:560px){.assistant{right:12px;bottom:12px}}
+@media (prefers-reduced-motion:reduce){.assistant-panel,.steps-count.pulse{animation:none}.assistant-launcher{transition:none}}
+.audit-verdict{font-weight:400}
+/* Launcher: a bell; with the label when there is room beside the content, a round bell otherwise. */
+.assistant-label{display:none}
+@media (min-width:1400px){
+  .assistant-launcher{width:auto;max-width:172px;height:auto;min-height:52px;border-radius:26px;padding:8px 16px 8px 14px;display:flex;align-items:center;gap:10px;text-align:left}
+  .assistant-launcher svg{flex:none}
+  .assistant-label{display:block;font-size:11.5px;font-weight:600;line-height:1.3}
+}
+@media (min-width:1400px){.assistant{right:16px}.assistant-launcher{max-width:164px;padding:8px 14px 8px 12px;gap:9px}.assistant-label{font-size:11px}}
+.lead{max-width:1056px}
+/* The description now has 4 lines (it quotes the seam definition): win back the height from spacing. */
+.logo{font-size:clamp(42px,7vh,64px);margin-bottom:clamp(6px,1.2vh,12px)}
+.lead{line-height:1.5}
+.hero{padding-bottom:clamp(10px,2vh,20px)}
+/* Description: justified, so every full line has the same width; the last line stays centred. */
+.lead{text-align:justify;text-align-last:center;hyphens:auto;-webkit-hyphens:auto}
+.lead{max-width:900px}
+.lead{max-width:60em}   /* 900px at 15px: sized to the font, so the lines always break at the same words */
+/* Balanced, justified description: the browser spreads the words evenly, so every line (the last included)
+   has the same width at any font size. Without balance support, the last line stays centred. */
+.lead{max-width:900px;text-wrap:balance}
+@supports (text-wrap:balance){.lead{text-align-last:justify}}
