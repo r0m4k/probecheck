@@ -239,7 +239,7 @@ const NextSteps = (() => {
     const all = [...stage1, ...stage2];
     empty.hidden = all.length > 0;
     intro.hidden = all.length === 0;
-    intro.textContent = `Based on identified seams in “${AUDITS[key]?.title || ''}”, here ${all.length > 1 ? `are ${all.length} things` : 'is one thing'} you can do next:`;
+    intro.textContent = `Based on identified seams in “${AUDITS[key]?.title || ''}”, here is the list of actions you can take:`;
     list.replaceChildren(...all.map(n => {
       const li = el('li', 'next-step');
       const text = el('div', 'next-text');
