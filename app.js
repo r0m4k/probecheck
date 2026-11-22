@@ -97,6 +97,29 @@ function seamLines(box, group) {
 
 /* ---------- Paper, code, and activation viewers ----------
    One viewer at a time opens below the page and the page scrolls to it (the original layout). */
+/** Eased, animated page scroll (ease-in-out, 0.75–1 s depending on distance). It stops if the user scrolls
+    themselves, and jumps straight there when motion is reduced or the page is hidden (no animation frames). */
+let scrollAnim = 0;
+function smoothScrollTo(y) {
+  const start = window.scrollY, dist = y - start, id = ++scrollAnim;
+  if (Math.abs(dist) < 2) return;
+  if (reduceMotion || document.hidden) { window.scrollTo(0, y); return; }
+  const duration = Math.min(1000, Math.max(750, Math.abs(dist) * 0.8));
+  const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const stop = () => { scrollAnim++; cleanup(); };
+  const cleanup = () => ['wheel', 'touchstart', 'keydown'].forEach(ev => window.removeEventListener(ev, stop));
+  ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, stop, { passive: true, once: true }));
+  let t0 = null;
+  const step = now => {
+    if (id !== scrollAnim) return;
+    if (t0 === null) t0 = now;
+    const t = Math.min(1, (now - t0) / duration);
+    window.scrollTo(0, start + dist * ease(t));
+    if (t < 1) requestAnimationFrame(step); else cleanup();
+  };
+  requestAnimationFrame(step);
+}
+
 const Drawer = (() => {
   const PANELS = ['#reader', '#codeView', '#actView'];
   let trigger = null;
@@ -104,7 +127,9 @@ const Drawer = (() => {
     PANELS.forEach(id => { const p = $(id); if (p !== panel) p.hidden = true; });
     if (panel.hidden) trigger = document.activeElement;
     panel.hidden = false;
-    panel.scrollIntoView({ block: 'start' });
+    // Replay the reveal animation, then glide down to the viewer.
+    panel.classList.remove('viewer-in'); void panel.offsetWidth; panel.classList.add('viewer-in');
+    smoothScrollTo(panel.offsetTop);   // layout position: not shifted by the reveal animation
   }
   function close() {
     if (!PANELS.some(id => !$(id).hidden)) return;

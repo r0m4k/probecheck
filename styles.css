@@ -847,3 +847,8 @@ a:focus-visible,button:focus-visible{outline:3px solid #608d78;outline-offset:3p
    has the same width at any font size. Without balance support, the last line stays centred. */
 .lead{max-width:900px;text-wrap:balance}
 @supports (text-wrap:balance){.lead{text-align-last:justify}}
+/* Viewers (paper, code, activations) rise and fade in as the page glides down to them. */
+.viewer-in{animation:viewerin .6s cubic-bezier(.22,.61,.36,1) both}
+.viewer-in .reader-head,.viewer-in .code-head{animation:viewerin .6s .08s cubic-bezier(.22,.61,.36,1) both}
+@keyframes viewerin{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.viewer-in,.viewer-in .reader-head,.viewer-in .code-head{animation:none}}
