@@ -27,7 +27,6 @@ const Setup = (() => {
 
   function ask(k) {
     key = k; token++;
-    if (downloaded[k]) return enter(SETUPS[k]);   // already on this computer: go straight to Stage 2
     const cfg = SETUPS[k], total = cfg.components.reduce((n, c) => n + c.bytes, 0);
     list.replaceChildren(...cfg.components.map(row));
     $('#getTotal').textContent = `Total: ${fmt(total)}`;
@@ -41,26 +40,25 @@ const Setup = (() => {
     confirmBtn.focus();
   }
 
-  /** Replayed download: all components start at once and progress in parallel at uneven speeds,
-      like a real download; small files finish first, the model last. Nothing is fetched. */
+  /** Replayed download: all components start at once and fill continuously (every display frame), with a
+      gentle wave in speed like a real download; small files finish first, the model last. Nothing is fetched. */
   async function fetchOne(c, id) {
     const bar = c.li.querySelector('.bar'), prog = c.li.querySelector('.get-progress'), size = c.li.querySelector('.get-size');
     c.li.classList.add('active');
-    const total = c.bytes > 1e9 ? 5200 : c.bytes > 1e5 ? 1700 : 1000;   // replay length in ms
-    let done = 0, elapsed = 0;
-    while (done < 1) {
-      const step = 110 + Math.random() * 90;
-      await wait(step);
-      if (id !== token) return false;
-      elapsed += step;
-      // Uneven speed: each tick moves between 40% and 160% of the average pace.
-      done = Math.min(1, done + (step / total) * (0.4 + Math.random() * 1.2));
-      if (elapsed > total * 1.6) done = 1;
-      const pct = Math.round(done * 100);
-      bar.style.width = pct + '%';
-      prog.setAttribute('aria-valuenow', String(pct));
-      size.textContent = `${fmt(c.bytes * done)} / ${c.size}`;
-    }
+    const total = c.bytes > 1e9 ? 4200 : c.bytes > 1e5 ? 1400 : 900;   // replay length in ms
+    const phase = Math.random() * Math.PI;                                 // each bar waves differently
+    let lastPct = -1, alive = true;
+    await tween(total, u => {
+      if (!alive || id !== token) { alive = false; return; }
+      // Monotonic progress whose speed swings between about 0.4x and 1.6x of the average.
+      const p = Math.min(1, Math.max(0, u - 0.6 / (4 * Math.PI) * (Math.sin(4 * Math.PI * u + phase) - Math.sin(phase))));
+      bar.style.width = (p * 100).toFixed(2) + '%';
+      const pct = Math.round(p * 100);
+      if (pct !== lastPct) { prog.setAttribute('aria-valuenow', String(pct)); lastPct = pct; }
+      size.textContent = `${fmt(c.bytes * p)} / ${c.size}`;
+    });
+    if (!alive || id !== token) return false;
+    bar.style.width = '100%';
     c.li.classList.replace('active', 'done');
     size.textContent = `${c.size} ✓`;
     return true;
@@ -82,7 +80,7 @@ const Setup = (() => {
     downloaded[key] = true;
     statusEl.textContent = 'All components downloaded.';
     cancelBtn.hidden = true;   // nothing left to cancel
-    await wait(700);
+    await wait(550);
     if (id !== token) return;
     dlg.close();
     enter(cfg);

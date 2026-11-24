@@ -69,7 +69,7 @@ const Rerun = (() => {
   async function show(key) {
     const r = RERUNS[key], id = ++token;
     if (!r) throw new Error(`No saved rerun for ${key}`);
-    skipAnim = !!seen.rerun[key];   // seen before: show the results at once
+    skipAnim = false;   // the rerun always plays in full
     showSkip('#skip2', !skipAnim);
     pipe.replaceChildren(...r.pipeline.map(stepFor));
     claimsEl.replaceChildren(...loadingRows(r.claims.length));   // placeholder while the rerun replays
@@ -84,17 +84,17 @@ const Rerun = (() => {
       const li = steps[i], st = li.querySelector('.pipe-state');
       li.dataset.state = 'running';
       status.textContent = `${s.name}…`;
-      if (s.count) {   // a counter that ticks up to the real size of the run
-        const ticks = 12;
-        for (let k = 1; k <= ticks; k++) {
-          await wait(s.ms / ticks);
+      const ms = s.ms * 0.8;
+      if (s.count) {   // a counter that climbs smoothly, frame by frame, to the real size of the run
+        await tween(ms, u => {
           if (id !== token) return;
-          const n = Math.round(s.count * k / ticks);
+          const n = Math.max(1, Math.ceil(s.count * u));
           st.textContent = s.run === 'split' ? `Split ${n} of ${s.count}` : `${n.toLocaleString('en-US')} ${s.run}`;
-        }
+        });
+        if (id !== token) return;
       } else {
         st.textContent = s.run;
-        await wait(s.ms);
+        await wait(ms);
         if (id !== token) return;
       }
       li.dataset.state = 'done';
@@ -103,15 +103,16 @@ const Rerun = (() => {
 
     claimsEl.replaceChildren();
     for (const [i, c] of r.claims.entries()) {
-      await wait(260);
+      await wait(200);
       if (id !== token) return;
       claimsEl.append(claimRow(c, i));
     }
     const reproduced = r.claims.filter(c => c.verdict === 'ok').length, unstable = r.claims.length - reproduced;
     $('#resSum').textContent = `${reproduced} of ${r.claims.length} claims reproduced${unstable ? ` · ${unstable} unstable` : ''}`;
     codeBtn.hidden = !CODE[key];
-    codeBtn.onclick = () => { codeBtn.setAttribute('aria-pressed', 'true'); CodeView.show(key, r.claims); };
+    codeBtn.onclick = () => { codeBtn.setAttribute('aria-pressed', 'true'); CodeView.show(key); };
     status.textContent = `Rerun complete: ${reproduced} of ${r.claims.length} claims reproduced${unstable ? `, ${unstable} unstable across random splits` : ''}.`;
+    NextSteps.fromCode(key);                         // the code quality steps join the next actions
     if (typeof Alt !== 'undefined') Alt.run(key);    // then the agent's alternative-hypothesis tests
   }
 

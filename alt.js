@@ -1,6 +1,6 @@
 /* Stage 2, part B: alternative hypotheses tested by the agent on newly generated data.
    Replays the saved run (alt-data.js, alt-readings.js): the agent's steps, then one row per hypothesis with
-   the measured accuracy and a verdict from the rule fixed before the run. "show activations" opens, below the
+   the measured accuracy and a verdict from the rule fixed before the run. "show activations and data quality summary" opens, below the
    page, the probe's reading at every token of the test statements. */
 
 const VERDICTS = {
@@ -21,7 +21,7 @@ function altScore(h) {
 const Alt = (() => {
   const list = $('#alts'), sum = $('#altSum'), status = $('#altStatus'), showBtn = $('#altShow');
   const pct = x => `${x.toFixed(1)}%`;
-  const pause = ms => new Promise(r => setTimeout(r, reduceMotion || skipAnim ? 0 : ms));
+  const pause = ms => new Promise(r => setTimeout(r, skipAnim ? 0 : ms));   // pacing, not motion
   let token = 0;
 
   function waitRows(n, text) {
@@ -99,13 +99,13 @@ const Alt = (() => {
     if (note) note.textContent = 'The agent is testing alternative hypotheses on new data…';
     for (const step of a.agent) {
       status.textContent = step;
-      await pause(900);
+      await pause(700);
       if (id !== token) return;
     }
     if (block) { block.dataset.state = 'done'; st.textContent = 'Done'; }
     list.replaceChildren();
     for (const [i, h] of a.hypotheses.entries()) {
-      await pause(260);
+      await pause(200);
       if (id !== token) return;
       list.append(row(h, i, control));
     }
@@ -126,7 +126,7 @@ const Alt = (() => {
 
 /* Activation viewer: one filter per tested dataset (first selected), plus the original statements for comparison. */
 const ActView = (() => {
-  const root = $('#actView'), filters = $('#actFilters'), listEl = $('#actList');
+  const root = $('#actView'), baseFilters = $('#actBaseFilters'), filters = $('#actFilters'), listEl = $('#actList');
 
   /** Blue for "true", orange for "false": a pair that stays distinct for colour-blind readers. */
   function colour(p) {
@@ -135,12 +135,18 @@ const ActView = (() => {
   }
 
   function sets(key) {
-    const out = [];
+    // First row: the paper's own data, split into training and test statements with no overlap (alt/train_test_readings.py).
+    const out = [
+      { id: 'train', name: 'Training set', label: 'The paper’s training statements (cities + neg_cities)', base: true,
+        note: 'p(true) is how likely the probe thinks a statement is true, from 0 to 1; ✓ means its answer was right.' },
+      { id: 'test', name: 'Test set', label: 'The paper’s held-out test statements', base: true,
+        note: 'p(true) is how likely the probe thinks a statement is true, from 0 to 1; ✓ means its answer was right.' }
+    ];
+    // Second row: the new data for each alternative hypothesis.
     for (const h of ALTS[key].hypotheses) {
       if (h.parts) h.parts.forEach(p => out.push({ id: p.key, name: p.name, label: `${h.short}: ${p.name}`, verdict: ALT_READINGS.scores[p.key].verdict }));
       else out.push({ id: h.key, name: h.short, label: h.short, verdict: ALT_READINGS.scores[h.key].verdict });
     }
-    out.push({ id: 'cities', name: 'The paper’s statements', label: 'The paper’s own statements, for comparison', ref: true });
     return out;
   }
 
@@ -148,10 +154,10 @@ const ActView = (() => {
       paper's probe reads the activation at that token alone. */
   function render(k, all) {
     const set = all[k], rows = ALT_READINGS.readings[set.id];
-    filters.querySelectorAll('.ev-filter').forEach((f, j) => f.setAttribute('aria-pressed', String(j === k)));
-    const s = ALT_READINGS.scores[set.ref ? 'control_cities' : set.id];
+    root.querySelectorAll('.ev-filter').forEach(f => f.setAttribute('aria-pressed', String(Number(f.dataset.k) === k)));
+    const s = ALT_READINGS.scores[set.id];
     $('#actOrigin').textContent = `${set.label} · ${rows.length.toLocaleString('en-US')} statements · the probe is correct on ${s.mean.toFixed(1)}%`;
-    $('#actNote').textContent = 'p(true) is how likely the probe thinks a statement is true, from 0 to 1, averaged over ten trained probes; ✓ means its answer was right.';
+    $('#actNote').textContent = set.note || 'p(true) is how likely the probe thinks a statement is true, from 0 to 1, averaged over ten trained probes; ✓ means its answer was right.';
     const frag = document.createDocumentFragment();
     for (const [text, label, p] of rows) {
       const rowEl = el('div', 'act-row');
@@ -173,16 +179,25 @@ const ActView = (() => {
   }
 
 
+  /** The data quality summary above the test statements. */
+  function renderDataQuality(key) {
+    renderSummary($('#dataQuality'), typeof DATA_QUALITY !== 'undefined' && DATA_QUALITY[key]);
+  }
+
   function show(key, startSet) {
     const all = sets(key);
-    filters.replaceChildren(...all.map((s, k) => {
+    renderDataQuality(key);
+    const button = (s, k) => {
       const f = el('button', 'ev-filter');
       f.type = 'button';
-      f.innerHTML = `<span class="dot" data-tone="${s.ref ? 'code' : VERDICTS[s.verdict].cls}" aria-hidden="true"></span>`;
+      f.dataset.k = k;
+      f.innerHTML = `<span class="dot" data-tone="${s.base ? 'code' : VERDICTS[s.verdict].cls}" aria-hidden="true"></span>`;
       f.append(s.name);
       f.addEventListener('click', () => render(k, all));
       return f;
-    }));
+    };
+    baseFilters.replaceChildren(...all.map(button).filter((_, k) => all[k].base));
+    filters.replaceChildren(...all.map(button).filter((_, k) => !all[k].base));
     Drawer.open(root);   // a side panel, like the paper reader
     render(Math.max(0, all.findIndex(x => x.id === startSet)), all);
   }
@@ -195,7 +210,7 @@ const ActView = (() => {
 const NextSteps = (() => {
   const panel = $('#assistantPanel'), launcher = $('#stepsLink'), list = $('#nextSteps'), count = $('#stepsCount'),
         empty = $('#stepsEmpty'), intro = $('#stepsIntro');
-  let stage1 = [], stage2 = [], key = null;
+  let stage1 = [], code = [], stage2 = [], key = null;
   const lower = n => n.charAt(0).toLowerCase() + n.slice(1);
   const word = n => ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'][n] || String(n);
   const Cap = t => t.charAt(0).toUpperCase() + t.slice(1);
@@ -203,7 +218,7 @@ const NextSteps = (() => {
 
   let shown = 0;
   function refresh() {
-    const n = stage1.length + stage2.length;
+    const n = stage1.length + code.length + stage2.length;
     count.textContent = String(n);
     count.dataset.empty = String(n === 0);
     if (n > shown) { count.classList.remove('pulse'); void count.offsetWidth; count.classList.add('pulse'); }   // new steps: pulse once
@@ -213,7 +228,7 @@ const NextSteps = (() => {
 
   /** Stage 1: steps from the audit of the paper, most severe first. */
   function fromAudit(paper, k) {
-    key = k; stage2 = [];
+    key = k; code = []; stage2 = [];
     const items = paper.groups.flatMap(g => g.items);
     const blocked = items.filter(i => i.required && MISSING(i.status)).map(i => lower(i.name));
     const asks = items.filter(i => i.ask);
@@ -232,11 +247,13 @@ const NextSteps = (() => {
 
   /** Stage 2: the hypothesis steps, added once the agent's tests are done. */
   function fromStage2(k) { stage2 = (ALTS[k] && ALTS[k].next) || []; refresh(); }
-  function clear() { stage1 = []; stage2 = []; key = null; refresh(); }
-  function clearStage2() { stage2 = []; refresh(); }
+  /** Stage 2: steps from the code quality summary, added once the reproduction results are in. */
+  function fromCode(k) { code = (typeof CODE_QUALITY !== 'undefined' && CODE_QUALITY[k]?.next) || []; refresh(); }
+  function clear() { stage1 = []; code = []; stage2 = []; key = null; refresh(); }
+  function clearStage2() { code = []; stage2 = []; refresh(); }
 
   function render() {
-    const all = [...stage1, ...stage2];
+    const all = [...stage1, ...code, ...stage2];
     empty.hidden = all.length > 0;
     intro.hidden = all.length === 0;
     intro.textContent = `Based on identified seams in “${AUDITS[key]?.title || ''}”, here is the list of actions you can take:`;
@@ -251,6 +268,7 @@ const NextSteps = (() => {
         btn.addEventListener('click', () => {
           close();
           if (n.action.type === 'mail') openMail(AUDITS[key]);
+          else if (n.action.type === 'code') { $('#resCode').setAttribute('aria-pressed', 'true'); CodeView.show(key); }
           else { $('#altShow').setAttribute('aria-pressed', 'true'); ActView.show(key, n.action.set); }
         });
         li.append(btn);
@@ -274,5 +292,5 @@ const NextSteps = (() => {
   $('#stepsClose').addEventListener('click', () => { close(); launcher.focus({ preventScroll: true }); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden && !document.querySelector('dialog[open]')) { close(); launcher.focus({ preventScroll: true }); } });
   refresh();
-  return { fromAudit, fromStage2, clear, clearStage2, open, close };
+  return { fromAudit, fromCode, fromStage2, clear, clearStage2, open, close };
 })();

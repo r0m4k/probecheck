@@ -17,9 +17,26 @@ const STATUS = {
   'Restricted': { cls: 'miss', label: 'Restricted' }
 };
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let skipAnim = false;   // set by a "skip" link, or when a result has been seen before: replays finish instantly
-const wait = ms => new Promise(r => setTimeout(r, reduceMotion || skipAnim ? 0 : ms));
-const seen = { audit: {}, rerun: {} };   // what the user has already watched once, per paper
+let skipAnim = false;   // kept for the replay code; the animations always play in full
+// Replay pacing is not motion: it keeps its timing even with "Reduce motion" on (CSS turns off the moving effects).
+const wait = ms => new Promise(r => setTimeout(r, skipAnim ? 0 : ms));
+const seen = { audit: {}, rerun: {} };
+
+/** Frame-by-frame animation (about 60 fps): calls fn(progress 0..1) on every display frame for `ms`.
+    Hidden pages get no animation frames, so they fall back to ~60 Hz timers; skipAnim finishes at once. */
+function tween(ms, fn) {
+  return new Promise(done => {
+    if (skipAnim || ms <= 0) { fn(1); return done(); }
+    const t0 = performance.now();
+    const tick = () => {
+      const t = Math.min(1, (performance.now() - t0) / ms);
+      fn(t);
+      if (t >= 1) return done();
+      document.hidden ? setTimeout(tick, 16) : requestAnimationFrame(tick);
+    };
+    tick();
+  });
+}   // what the user has already watched once, per paper
 
 const $ = s => document.querySelector(s);
 const choose = $('#choose'), audit = $('#audit'), list = $('#components'), statusEl = $('#auditStatus');
@@ -219,7 +236,7 @@ async function inspect(key) {
   const paper = AUDITS[key], id = ++run;
   current = key; auditDone = false;
   if (typeof NextSteps !== 'undefined') NextSteps.clear();
-  skipAnim = !!seen.audit[key];   // a paper seen before is shown at once
+  skipAnim = false;   // the analysis always plays in full
   showSkip('#skip1', !skipAnim);
   Drawer.close();
   $('#stage2View').hidden = true;
@@ -249,7 +266,7 @@ async function inspect(key) {
     pill.textContent = 'Analyzing…';
     statusEl.textContent = `Checking ${group.name.toLowerCase()} (${gi + 1} of ${paper.groups.length})…`;
     for (const item of group.items) {
-      await wait(380);
+      await wait(290);
       if (id !== run) return;
       const st = STATUS[item.status];
       const li = el('li', 'item' + (item.required ? ' req' : ''));
@@ -257,7 +274,7 @@ async function inspect(key) {
       li.append(el('span', 'item-name', item.name), el('span', 'chip ' + st.cls, st.label));
       ul.append(li);
     }
-    await wait(250);
+    await wait(200);
     if (id !== run) return;
     const v = verdict(group.items);
     pill.className = 'pill ' + v.cls;
@@ -315,6 +332,8 @@ function reset() {
 document.querySelectorAll('[data-inspect]').forEach(b => b.addEventListener('click', () => inspect(b.dataset.inspect)));
 // "End inspection" (Stage 2 header): finish and go back to choosing a paper.
 $('#endInspection').addEventListener('click', () => { reset(); window.scrollTo({ top: 0 }); });
+// "Go back" (Stage 2 header): back to the Stage 1 results.
+$('#s2GoBack').addEventListener('click', () => { Setup.back(); window.scrollTo({ top: 0 }); });
 // "Go back" (Stage 1 header): back to choosing a paper.
 $('#headBack').addEventListener('click', () => { reset(); window.scrollTo({ top: 0 }); });
 // Into Stage 2: the setup step asks permission before anything is downloaded (setup.js).

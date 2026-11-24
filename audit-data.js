@@ -58,8 +58,8 @@ const AUDITS = {
             find: ['to produce intermediate activations', 'For multi-layer probing, we concatenate activations', 'using concatenated activations across all layers', 'Our default probe uses all layers'],
             note: 'Layers: activations from all layers are concatenated by default. Site: only “intermediate activations” at each layer; residual stream vs. attention or MLP output is not stated.', ref: '§5.1, Eq. 1; §5.2' },
           { name: 'Token position', required: true, status: 'Reported',
-            find: ['predict the exchange-level harmfulness at each token position', 'we average logits over a sliding window of M tokens during training', 'During inference, we use an exponential moving average'],
-            note: 'A prediction at every token: logits are averaged over a 16-token sliding window in training and an exponential moving average at inference.', ref: '§5.1, Eqs. 1–2; §5.2' },
+            find: ['the language model processes each token'],
+            note: 'Activations are read at every token position of the exchange, so the probe can score each token as a response streams.', ref: '§5.1' },
           { name: 'Preprocessing', ask: "Were activations centered, normalized, or otherwise transformed before probing?", status: 'Not reported',
             note: 'No centering, normalization, or dimensionality reduction of activations is described.', ref: 'Not found in the paper' }
         ] },

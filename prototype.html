@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProbeCheck</title>
+<link rel="stylesheet" href="styles.css?v=112">
+</head>
+<body>
+<main class="page">
+
+  <!-- 1. Identity -->
+  <header class="hero">
+    <h1 class="logo">probe<i>check</i></h1>
+    <p class="lead">ProbeCheck reveals the <em>seams</em> (“mismatches and cracks” between the assumptions made when building an AI system and the reality of its use; Ehsan et al., 2024) in linear probe experiments: the gaps between what an experiment reports and what can actually be checked. It shows what is missing to rerun an experiment, reruns it to see whether the results hold, and tests alternative hypotheses on new data to see whether the probe detects what the paper claims. Built for mechanistic interpretability researchers.</p>
+  </header>
+
+  <!-- 2. How it works -->
+  <section class="how" aria-labelledby="howTitle">
+    <h2 id="howTitle" class="eyebrow">How it works</h2>
+    <div class="stages">
+      <div class="stage">
+        <ol class="steps" start="1">
+          <li class="step current" id="step1" aria-current="step"><span class="here">You are here</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6"/><path d="m9.5 13.5 2.5-2.5 2.5 2.5"/></svg><strong>Choose a linear probe research paper to inspect</strong></li>
+          <li class="step" id="step2"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><path d="M13 3v5h5v2"/><circle cx="16" cy="16" r="3.2"/><path d="m18.4 18.4 2.6 2.6"/><path d="M8.5 12h3M8.5 15.5h2"/></svg><strong>Analyze how reproducible are the outlined linear probes experiments</strong></li>
+        </ol>
+      </div>
+      <div class="stage" id="stage2">
+        <ol class="steps" start="3">
+          <li class="step" id="step3"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg><strong>Reproduce the experiment and test alternative hypotheses on new data</strong></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Paper choice -->
+  <section class="choose" id="choose" aria-label="Choose a paper to inspect">
+    <div class="desk">
+
+      <article class="sheet-wrap">
+        <div class="sheet tilt-left">
+          <span class="sheet-meta">arXiv:2601.04603 · 2026</span>
+          <span class="sheet-title">Constitutional Classifiers++</span>
+          <span class="sheet-authors">Cunningham et al.</span>
+          <span class="sheet-body" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="caption" id="caseA">
+          <p class="sheet-desc">Linear probes on Claude flag harmful exchanges</p>
+          <button class="btn" type="button" data-inspect="cc" aria-label="Inspect the probe experiment in Constitutional Classifiers++">Inspect experiment →</button>
+        </div>
+      </article>
+
+      <article class="sheet-wrap">
+        <div class="sheet tilt-right">
+          <span class="sheet-meta">arXiv:2310.06824 · 2023</span>
+          <span class="sheet-title">The Geometry of Truth</span>
+          <span class="sheet-authors">Marks &amp; Tegmark</span>
+          <span class="sheet-body" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="caption" id="caseB">
+          <p class="sheet-desc">Linear probes on LLaMA-2 read whether statements are true</p>
+          <button class="btn" type="button" data-inspect="got" aria-label="Inspect the probe experiment in The Geometry of Truth">Inspect experiment →</button>
+        </div>
+      </article>
+
+      <article class="sheet-wrap">
+        <div class="sheet sheet-add" aria-hidden="true">
+          <svg class="plus" viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="sheet-add-label">Your paper</span>
+        </div>
+        <div class="caption">
+          <p class="sheet-desc">Upload your own probe paper</p>
+          <button class="btn secondary" type="button" disabled aria-disabled="true">Coming soon</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 4. Reproducibility analysis (replaces the paper choice after Inspect paper) -->
+  <section class="audit" id="audit" hidden aria-labelledby="auditTitle">
+    <div class="audit-head">
+      <div class="audit-paper">
+        <strong id="auditTitle" tabindex="-1"></strong>
+        <span class="audit-verdict-row"><span class="audit-verdict" id="auditVerdict"></span><button class="info-btn" type="button" data-legend="1" aria-haspopup="dialog" aria-label="What do these labels mean?" title="What do these labels mean?"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/></svg></button></span>
+      </div>
+      <p class="audit-status sr-only" id="auditStatus" role="status" aria-live="polite"></p>
+      <div class="head-links" id="headLinks" hidden>
+        <button class="head-link request" type="button" id="headRequest"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span class="label">Request missing details</span></button>
+        <button class="head-link back" type="button" id="headBack" title="Go back to choosing a paper"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="label">Go back</span></button>
+        <button class="head-link next" type="button" id="headNext"><svg class="ico ico-lock" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="label">Next stage</span><svg class="ico ico-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="components" id="components"></div>
+  </section>
+
+  <!-- 5. Stage 2: reached after the components are downloaded (content to be defined) -->
+  <section class="audit stage2-view" id="stage2View" hidden aria-labelledby="s2Title">
+    <div class="audit-head">
+      <div class="audit-paper">
+        <strong id="s2Title" tabindex="-1"></strong>
+      </div>
+      <div class="head-links">
+        <button class="head-link back" type="button" id="s2GoBack" title="Go back to the Stage 1 results"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="label">Go back</span></button>
+        <button class="head-link end primary" type="button" id="endInspection" title="Finish and go back to choosing a paper"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span class="label">End inspection</span></button>
+      </div>
+    </div>
+    <p class="sr-only" id="s2Status" role="status" aria-live="polite"></p>
+    <ol class="pipeline" id="pipeline" aria-label="Rerun steps"></ol>
+    <div class="s2-grid">
+      <section class="s2-panel s2-results" aria-labelledby="resTitle">
+        <div class="panel-head">
+          <h3 id="resTitle">Reproduction results</h3>
+          <span class="res-sum-row"><span class="res-sum" id="resSum"></span><button class="info-btn" type="button" data-legend="repro" aria-haspopup="dialog" aria-label="What do these labels mean?" title="What do these labels mean?"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/></svg></button></span>
+        </div>
+        <ul class="claims" id="claims"></ul>
+        <div class="panel-foot">
+          <button class="comp-evidence" type="button" id="resCode" hidden aria-pressed="false" aria-controls="codeView">show code and code quality summary</button>
+        </div>
+      </section>
+      <section class="s2-panel s2-alt" aria-labelledby="altTitle">
+        <div class="panel-head">
+          <h3 id="altTitle">Alternative hypotheses tested</h3>
+          <span class="res-sum-row"><span class="res-sum" id="altSum"></span><button class="info-btn" type="button" data-legend="alt" aria-haspopup="dialog" aria-label="What do these labels mean?" title="What do these labels mean?"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/></svg></button></span>
+        </div>
+        <p class="sr-only" id="altStatus" role="status" aria-live="polite"></p>
+        <ul class="claims" id="alts"></ul>
+        <div class="panel-foot">
+          <button class="comp-evidence" type="button" id="altShow" hidden aria-pressed="false" aria-controls="actView">show activations and data quality summary</button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+</main>
+
+<!-- 5. Paper reader: a side panel showing where in the paper each component is described -->
+<section class="reader drawer" id="reader" hidden aria-label="Evidence in the paper">
+  <button class="drawer-close" type="button" aria-label="Close panel" title="Close (Esc)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="reader-head">
+    <span class="ev-for" id="evFor"></span>
+    <div class="ev-filters" role="group" aria-label="Filter evidence by item"></div>
+    <nav class="ev-tabs" aria-labelledby="evFor"></nav>
+    <p class="reader-status muted" role="status"></p>
+  </div>
+  <div class="reader-pages" tabindex="0" aria-label="Paper pages. Use the left and right arrow keys to turn pages."></div>
+  <div class="reader-nav">
+    <button class="btn secondary reader-prev" type="button" aria-label="Previous page">← Previous</button>
+    <span class="reader-pos" aria-live="polite"></span>
+    <button class="btn secondary reader-next" type="button" aria-label="Next page">Next →</button>
+    <div class="zoom" role="group" aria-label="Zoom">
+      <button class="zoom-btn zoom-out" type="button" aria-label="Zoom out">−</button>
+      <span class="zoom-level" aria-live="polite">100%</span>
+      <button class="zoom-btn zoom-in" type="button" aria-label="Zoom in">+</button>
+      <button class="zoom-btn zoom-fit" type="button">Fit width</button>
+    </div>
+  </div>
+</section>
+
+<!-- Probe readings at each token for the alternative-hypothesis tests: a side panel, like the paper reader -->
+<section class="code-view act-view drawer" id="actView" hidden aria-label="Probe readings on the test statements">
+  <button class="drawer-close" type="button" aria-label="Close panel" title="Close (Esc)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <details class="cq" id="dataQuality" open>
+    <summary><span class="cq-title">Data quality summary</span><span class="cq-counts"></span></summary>
+    <div class="cq-groups"></div>
+    <p class="cq-scope" hidden></p>
+  </details>
+  <div class="code-head act-head">
+    <span class="ev-for">Activations on the paper’s data:</span>
+    <div class="ev-filters" id="actBaseFilters" role="group" aria-label="Show the readings on the paper’s training or test statements"></div>
+    <span class="ev-for">Activations on new hypotheses:</span>
+    <div class="ev-filters" id="actFilters" role="group" aria-label="Show the readings for one test"></div>
+  </div>
+  <div class="code-meta">
+    <span class="code-origin" id="actOrigin"></span>
+    <p class="code-note" id="actNote"></p>
+    <p class="act-legend"><span class="tok sw-true">probe reads “true”</span><span class="tok sw-false">probe reads “false”</span><span>As in the paper, the probe reads only the last token of each statement (its final punctuation, coloured). Darker means more certain.</span></p>
+  </div>
+  <div class="act-list" id="actList" tabindex="0" aria-label="Test statements with probe readings"></div>
+</section>
+
+<!-- Code behind a Stage 2 result: a side panel, like the paper reader in Stage 1 -->
+<section class="code-view drawer" id="codeView" hidden aria-label="Code behind the result">
+  <button class="drawer-close" type="button" aria-label="Close panel" title="Close (Esc)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <details class="cq" id="codeQuality" open>
+    <summary><span class="cq-title">Code quality summary</span><span class="cq-counts" id="cqCounts"></span></summary>
+    <div class="cq-groups" id="cqGroups"></div>
+    <p class="cq-scope" id="cqScope"></p>
+  </details>
+  <div class="code-head">
+    <span class="ev-for" id="codeFor"></span>
+    <div class="ev-filters" id="codeFilters" role="group" aria-label="Show the code behind one result"></div>
+    <nav class="ev-tabs" id="codeTabs" aria-label="Files"></nav>
+  </div>
+  <div class="code-meta">
+    <span class="code-origin" id="codeOrigin"></span>
+    <a class="code-link" id="codeLink" target="_blank" rel="noopener">view the whole file on GitHub ↗</a>
+    <p class="code-note" id="codeNote"></p>
+  </div>
+  <pre class="code-box" id="codeBody" tabindex="0" aria-label="Code excerpt"></pre>
+</section>
+
+<!-- What the status labels mean (opened from "What do these labels mean?") -->
+<dialog id="legendDialog" aria-labelledby="legendTitle">
+  <div class="mail legend">
+    <h2 id="legendTitle">What the labels mean</h2>
+    <div class="legend-part" data-part="1">
+      <h3>Each detail</h3>
+      <dl>
+        <dt class="chip ok">Reported</dt><dd>Stated clearly in the paper.</dd>
+        <dt class="chip part">Partial</dt><dd>Stated, but incomplete or ambiguous.</dd>
+        <dt class="chip code">In code</dt><dd>Missing from the paper, but set in the released code.</dd>
+        <dt class="chip code">Gated</dt><dd>Available, but only after accepting a licence.</dd>
+        <dt class="chip miss">Not reported</dt><dd>Not stated anywhere we could find.</dd>
+        <dt class="chip miss">Restricted</dt><dd>Exists, but is not available to outside researchers.</dd>
+      </dl>
+      <h3>Each component</h3>
+      <dl>
+        <dt class="chip ok">Enough to rerun</dt><dd>Every detail is reported.</dd>
+        <dt class="chip part">Enough, with gaps</dt><dd>It can be rerun, but some details are partial or only in code.</dd>
+        <dt class="chip miss">Not enough to rerun</dt><dd>A detail needed to rerun is missing or unavailable.</dd>
+      </dl>
+    </div>
+    <div class="legend-part" data-part="repro">
+      <h3>Reproduction results</h3>
+      <dl>
+        <dt class="chip ok">Reproduced</dt><dd>Our rerun matches the paper within 3 points.</dd>
+        <dt class="chip part">Unstable</dt><dd>It matches on average, but varies a lot between runs.</dd>
+      </dl>
+    </div>
+    <div class="legend-part" data-part="alt">
+      <h3>Alternative hypotheses</h3>
+      <dl>
+        <dt class="chip miss">Confirmed</dt><dd>The probe is right on 70% of statements or fewer.</dd>
+        <dt class="chip part">Partly confirmed</dt><dd>The probe is right on 70–90% of statements.</dd>
+      </dl>
+    </div>
+    <div class="mail-actions"><button type="button" class="btn" id="legendClose">Close</button></div>
+  </div>
+</dialog>
+
+<!-- Email draft to the paper's authors: editable; copied or opened in the user's email app, never sent from here -->
+<dialog id="mailDialog" aria-labelledby="mailTitle">
+  <form method="dialog" class="mail">
+    <h2 id="mailTitle">Ask the authors</h2>
+    <p class="muted" id="mailCount"></p>
+    <label for="mailTo">To</label>
+    <input id="mailTo" type="text" placeholder="Corresponding author’s email" autocomplete="off" aria-describedby="mailFound">
+    <p class="mail-found" id="mailFound" role="status" aria-live="polite"></p>
+    <label for="mailSubject">Subject</label>
+    <input id="mailSubject" type="text">
+    <label for="mailBody">Message</label>
+    <textarea id="mailBody" rows="14"></textarea>
+    <div class="mail-actions">
+      <span id="mailStatus" class="muted" role="status" aria-live="polite"></span>
+      <button type="button" class="btn secondary" id="mailClose">Close</button>
+      <button type="button" class="btn secondary" id="mailCopy">Copy text</button>
+      <button type="button" class="btn" id="mailOpen">Open in email app</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Stage 2 entry: the user confirms the downloads before anything is fetched (replayed in this prototype) -->
+<dialog id="getDialog" aria-labelledby="getTitle" aria-describedby="getIntro">
+  <div class="mail get">
+    <h2 id="getTitle">Download the experiment components?</h2>
+    <p class="muted" id="getIntro">To reproduce the experiment, ProbeCheck needs these components on this computer.</p>
+    <ul class="get-list" id="getList"></ul>
+    <p class="get-total" id="getTotal"></p>
+    <div class="mail-actions">
+      <span id="getStatus" class="muted" role="status" aria-live="polite"></span>
+      <button type="button" class="btn secondary" id="getCancel">Cancel</button>
+      <button type="button" class="btn" id="getConfirm">Download</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Next actions based on identified seams: a messenger-style assistant in the bottom-right corner, on every screen -->
+<div class="assistant">
+  <section class="assistant-panel" id="assistantPanel" hidden role="dialog" aria-labelledby="stepsTitle">
+    <header class="assistant-head">
+      <span class="assistant-avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 18v-5a5 5 0 0 1 10 0v5"/><path d="M5 18h14v3H5z"/><path d="M10 13.5a2 2 0 0 1 2-2"/><path d="M12 2.5v2M4.6 5.6 6 7M19.4 5.6 18 7M2.5 12.5h2M19.5 12.5h2"/></svg></span>
+      <span class="assistant-id"><strong id="stepsTitle">Next actions based on identified seams</strong></span>
+      <button class="assistant-close" type="button" id="stepsClose" aria-label="Close next actions"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <div class="assistant-body" id="assistantBody">
+      <p class="msg" id="stepsEmpty">No seams identified yet. Choose a paper, and I’ll suggest next actions as I find seams in its experiment.</p>
+      <p class="msg" id="stepsIntro" hidden></p>
+      <ol class="next-steps" id="nextSteps"></ol>
+    </div>
+  </section>
+  <button class="assistant-launcher" type="button" id="stepsLink" aria-expanded="false" aria-controls="assistantPanel" aria-label="Next actions based on identified seams" title="Next actions based on identified seams"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 18v-5a5 5 0 0 1 10 0v5"/><path d="M5 18h14v3H5z"/><path d="M10 13.5a2 2 0 0 1 2-2"/><path d="M12 2.5v2M4.6 5.6 6 7M19.4 5.6 18 7M2.5 12.5h2M19.5 12.5h2"/></svg><span class="assistant-label">Next actions based on identified seams</span><span class="steps-count" id="stepsCount">0</span></button>
+</div>
+
+<script src="vendor/pdf.min.js"></script>
+<script src="audit-data.js?v=94"></script>
+<script src="reader.js?v=93"></script>
+<script src="app.js?v=99"></script>
+<script src="setup-data.js?v=93"></script>
+<script src="setup.js?v=98"></script>
+<script src="rerun-data.js?v=93"></script>
+<script src="rerun.js?v=100"></script>
+<script src="code-data.js?v=95"></script>
+<script src="code-quality-data.js?v=9"></script>
+<script src="data-quality-data.js?v=4"></script>
+<script src="code.js?v=101"></script>
+<script src="alt-readings.js?v=95"></script>
+<script src="alt-data.js?v=93"></script>
+<script src="alt.js?v=106"></script>
+</body>
+</html>
