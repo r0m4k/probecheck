@@ -852,3 +852,12 @@ a:focus-visible,button:focus-visible{outline:3px solid #608d78;outline-offset:3p
 .viewer-in .reader-head,.viewer-in .code-head{animation:viewerin .6s .08s cubic-bezier(.22,.61,.36,1) both}
 @keyframes viewerin{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.viewer-in,.viewer-in .reader-head,.viewer-in .code-head{animation:none}}
+/* "Go back": the outlined green secondary button. */
+.head-link.back{border-color:#315b4c;color:#315b4c;background:#fff}
+.head-link.back:hover{background:#f3f7f4}
+/* The authors button is coloured like the cards' most common verdict. */
+.head-link.request[data-tone=ok]{border-color:#315b4c;color:#2f6048;background:#fff}
+.head-link.request[data-tone=part]{border-color:#d4b06a;color:#7a5826;background:#fff}
+.head-link.request[data-tone=part]:hover{background:#fdf7ea;border-color:#b8913f}
+.head-link.request[data-tone=miss]{border-color:#c98a84;color:#a33b3b;background:#fff}
+.head-link.request[data-tone=miss]:hover{background:#fcf1ef;border-color:#a33b3b}

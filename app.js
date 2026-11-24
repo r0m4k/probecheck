@@ -286,7 +286,10 @@ async function inspect(key) {
   $('#headLinks').hidden = false;
   const req = $('#headRequest'), next = $('#headNext');
   req.querySelector('.label').textContent = blocked ? 'Request missing details' : 'Ask authors to clarify';
-  req.classList.toggle('danger', !!blocked);
+  // The authors button takes the colour of the most common card verdict (ties go to the more severe one).
+  const tones = paper.groups.map(g => verdict(g.items).cls), rank = { miss: 3, part: 2, ok: 1 };
+  const tally = tones.reduce((m, t) => (m[t] = (m[t] || 0) + 1, m), {});
+  req.dataset.tone = Object.keys(tally).sort((a, b) => tally[b] - tally[a] || rank[b] - rank[a])[0];
   req.hidden = !paper.groups.some(g => g.items.some(i => i.ask));
   req.onclick = () => openMail(paper);
   next.disabled = !!blocked;
@@ -312,6 +315,8 @@ function reset() {
 document.querySelectorAll('[data-inspect]').forEach(b => b.addEventListener('click', () => inspect(b.dataset.inspect)));
 // "End inspection" (Stage 2 header): finish and go back to choosing a paper.
 $('#endInspection').addEventListener('click', () => { reset(); window.scrollTo({ top: 0 }); });
+// "Go back" (Stage 1 header): back to choosing a paper.
+$('#headBack').addEventListener('click', () => { reset(); window.scrollTo({ top: 0 }); });
 // Into Stage 2: the setup step asks permission before anything is downloaded (setup.js).
 $('#headNext').addEventListener('click', () => { if (current && SETUPS[current]) Setup.open(current); });
 document.querySelectorAll('[data-pending]').forEach(btn => btn.addEventListener('click', () => {
